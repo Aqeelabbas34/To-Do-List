@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/drawer_id"
+        android:title=""
+        android:icon="@drawable/hamburger_menu_svgrepo_com"
+        />
+    <item
+        android:id="@+id/tasks_id"
+    android:title="@string/task"
+    android:icon="@drawable/task"/>
+
+    <item
+        android:title=""
+        android:enabled="false"
+        android:checkable="false"/>
+    <item
+        android:id="@+id/calender_id"
+    android:title="@string/calender"
+    android:icon="@drawable/calender"/>
+
+    <item
+        android:id="@+id/profile_id"
+    android:title="@string/my"
+    android:icon="@drawable/profile"/>
+
+
+</menu>
