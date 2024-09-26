@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    tools:context=".Calender_fragment">
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <TextView
+        android:id="@+id/calender_TV_ID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/calender"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_margin="15dp"
+        />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/calender_card_view"
+        android:layout_below="@id/calender_TV_ID"
+        android:layout_margin="15dp"
+        app:cardCornerRadius="15dp"
+        >
+        <CalendarView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/calender_view"
+            android:layout_below="@id/calender_TV_ID"/>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
+
+</FrameLayout>
