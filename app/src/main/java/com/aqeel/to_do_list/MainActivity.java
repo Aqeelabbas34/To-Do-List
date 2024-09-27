@@ -1,19 +1,23 @@
 package com.aqeel.to_do_list;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.renderscript.ScriptGroup;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.aqeel.to_do_list.databinding.ActivityMainBinding;
+import com.aqeel.to_do_list.databinding.CustomDialogeBinding;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -76,8 +80,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         showDialogeButton.setOnClickListener(view -> {
             BottomSheetDialog dialog = new BottomSheetDialog(this);
             View dialogeView = LayoutInflater.from(this).inflate(R.layout.custom_dialoge, null);
-            dialog.setContentView(dialogeView);
+            CustomDialogeBinding binding1;
+            binding1=CustomDialogeBinding.inflate(getLayoutInflater());
+            binding1.cardViewCategoryId.setOnClickListener(view1 -> {
+                Dialog customDialog=new Dialog(this);
+                View customDialogView=LayoutInflater.from(this).inflate(R.layout.category_choice,null);
+                customDialog.setContentView(customDialogView);
+                customDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                customDialog.show();
+
+            });
+            dialog.setContentView(binding1.getRoot());
             dialog.show();
+
 
         });
 

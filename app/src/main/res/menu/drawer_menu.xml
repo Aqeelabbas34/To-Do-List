@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item
-    android:title="star tasks"
+    android:title="@string/starTask"
+    android:icon="@drawable/star"
     /><item
-    android:title="setting"
+    android:title="@string/setting"
+    android:icon="@drawable/setting"
     /><item
-    android:title="Log out"
+    android:title="@string/Logout"
+    android:icon="@drawable/logout"
     />
 </menu>

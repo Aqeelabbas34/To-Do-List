@@ -1,0 +1,15 @@
+<!-- res/drawable/menu_item_divider.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background color (if needed) -->
+    <item>
+        <shape>
+            <solid android:color="#DDDDDD"/> <!-- Change color if needed -->
+        </shape>
+    </item>
+    <!-- Bottom border line -->
+    <item android:bottom="1dp">
+        <shape>
+            <solid android:color="@color/white"/> <!-- Divider color -->
+        </shape>
+    </item>
+</layer-list>

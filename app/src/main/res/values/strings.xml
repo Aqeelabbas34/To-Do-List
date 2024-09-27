@@ -11,6 +11,20 @@
     <string name="nav_open">navigation open</string>
     <string name="nav_close">navigation close</string>
     <string name="enterTask">Enter New Task</string>
+    <string name="chooseText">Choose Category</string>
+    <string name="starTask">Star Task</string>
+    <string name="setting">Settings</string>
+    <string name="Logout">Log Out</string>
+
+    <string name="mineHeader">Mine</string>
+    <string name="completedTask">Completed Task</string>
+    <string name="pendingTask">Pending Task</string>
+    <string name="progress">Daily Progress</string>
+    <string name="nextWeek">Tasks In Next 7 Days</string>
+    <string name="Overview">Task Overview</string>
+    <string name="pendingCategories">Pending Tasks In Categories</string>
+
+    <string name="DevelopedBy">Developed By Enfotrix</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
