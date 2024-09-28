@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "352195576518",
+    "project_id": "to-do-list-3c2ec",
+    "storage_bucket": "to-do-list-3c2ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352195576518:android:637c86012e70dc90e4cdc7",
+        "android_client_info": {
+          "package_name": "com.aqeel.to_do_list"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1GNQUmsEXONDX7JVHuqqqB04X7NirumY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
