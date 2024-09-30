@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/calender_view"
 
-
             android:layout_below="@id/calender_TV_ID"/>
     </androidx.cardview.widget.CardView>
 
