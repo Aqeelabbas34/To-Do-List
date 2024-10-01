@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
                 findViewById(R.id.content_frame).setTranslationX(slideOffset * drawerView.getWidth());
+                findViewById(R.id.content_frame2).setTranslationX(slideOffset * drawerView.getWidth());
             }
 
             @Override
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 View customDialogView = LayoutInflater.from(this).inflate(R.layout.category_choice, null);
                 customDialog.setContentView(customDialogView);
                 customDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                customDialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.round_corner));
+                customDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 customDialog.show();
                 customDialog.setCancelable(true);
 
@@ -96,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 View customDialogCalender = LayoutInflater.from(this).inflate(R.layout.custom_dialoge_calender, null);
                 dialog1.setContentView(customDialogCalender);
                 dialog1.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                dialog1.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.round_corner));
+                dialog1.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 dialog1.show();
                 dialog1.setCancelable(true);
 

@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+
     implementation (libs.recyclerview)
     implementation (libs.lottie)
     implementation(libs.appcompat)
