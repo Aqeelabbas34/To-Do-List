@@ -13,6 +13,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
 import com.aqeel.to_do_list.databinding.ActivityMainBinding;
 import com.aqeel.to_do_list.databinding.CustomDialogeBinding;
@@ -141,4 +142,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
 
     }
+
+
 }
