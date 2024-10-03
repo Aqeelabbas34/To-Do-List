@@ -44,22 +44,34 @@ public class SignUp extends AppCompatActivity {
            } else if (password.isEmpty()) {
                binding.paswordET.setError("enter password");
            }
-          else {
-               ModelUser modelUser=new ModelUser(name,mail,password);
 
-               db.collection("User").add(modelUser)
-                       .addOnSuccessListener(documentReference -> {
-                           Toast.makeText(SignUp.this,"Successful",Toast.LENGTH_LONG).show();
-                       })
-                       .addOnFailureListener(new OnFailureListener() {
-                           @Override
-                           public void onFailure(@NonNull Exception e) {
-                               Toast.makeText(SignUp.this,"failed",Toast.LENGTH_SHORT).show();;
-                           }
-                       });
-               startActivity(new Intent(SignUp.this,MainActivity.class));
-           }
 
-       });
+
+              else {
+                   db.collection("User")
+                           .whereEqualTo("email", mail)
+                           .get()
+                           .addOnCompleteListener(task -> {
+                               if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                                   // Email already exists
+                                   Toast.makeText(SignUp.this, "Email already registered", Toast.LENGTH_LONG).show();
+                               } else {
+                                   ModelUser modelUser = new ModelUser(name, mail, password);
+                                   db.collection("User").add(modelUser)
+                                           .addOnSuccessListener(documentReference -> {
+                                               Toast.makeText(SignUp.this, "Signup successful", Toast.LENGTH_LONG).show();
+                                               startActivity(new Intent(SignUp.this, LoginActivity.class));
+                                           })
+                                           .addOnFailureListener(e -> {
+                                               Toast.makeText(SignUp.this, "Signup failed", Toast.LENGTH_SHORT).show();
+                                           });
+                               }
+                           })
+                           .addOnFailureListener(e -> {
+                               Toast.makeText(SignUp.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                           });
+               }
+           });
+       binding.btnLogin.setOnClickListener(view -> startActivity(new Intent(SignUp.this,LoginActivity.class)));
     }
 }

@@ -2,6 +2,9 @@ package com.aqeel.to_do_list;
 
 public class ModelUser {
     String name,email,password;
+    ModelUser(){
+
+    }
     ModelUser(String Name, String Email,String pass){
         this.name=Name;
         this.email=Email;

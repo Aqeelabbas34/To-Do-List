@@ -102,6 +102,7 @@
             android:layout_marginTop="20dp"
             app:backgroundTint="@null"
             android:background="@drawable/save_btn_bg"
+            android:backgroundTint="@color/grey"
             android:layout_marginHorizontal="20dp"/>
         <Button
             android:layout_width="match_parent"
