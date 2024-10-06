@@ -5,10 +5,10 @@ public class ModelTask {
 
     private boolean isCompleted;
 
-    public ModelTask(String taskName, String taskDate, String taskTime, boolean isCompleted) {
+    public ModelTask(String taskName) {
         this.taskName = taskName;
 
-        this.isCompleted = isCompleted;
+//        this.isCompleted = isCompleted;
     }
 
     public String getTaskName() {
@@ -16,12 +16,12 @@ public class ModelTask {
     }
 
 
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-
-    public void setCompleted(boolean completed) {
-        isCompleted = completed;
-    }
+//    public boolean isCompleted() {
+//        return isCompleted;
+//    }
+//
+//    public void setCompleted(boolean completed) {
+//        isCompleted = completed;
+//    }
 }
 
