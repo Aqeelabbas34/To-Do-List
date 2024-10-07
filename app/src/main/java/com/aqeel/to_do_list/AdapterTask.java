@@ -35,6 +35,7 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
     public int getItemCount() {
         return taskArrayList.size();
     }
+    //item view holder holds the item
     public  static class ItemViewHolder extends RecyclerView.ViewHolder{
         public TextView taskTV;
 
