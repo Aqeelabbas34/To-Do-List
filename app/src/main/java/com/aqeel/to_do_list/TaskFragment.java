@@ -16,8 +16,13 @@ import android.widget.SearchView;
 import android.widget.Toolbar;
 
 import com.aqeel.to_do_list.databinding.FragmentTaskBinding;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 public class TaskFragment extends Fragment {
@@ -42,21 +47,31 @@ public class TaskFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView= binding.taskRV;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        ArrayList<ModelTask> taskArrayList= new ArrayList<>();
-       taskArrayList.add(new ModelTask("Task 1"));
-       taskArrayList.add(new ModelTask("Task 2"));
-       taskArrayList.add(new ModelTask("Task 3"));
-       taskArrayList.add(new ModelTask("Task 4"));
-       taskArrayList.add(new ModelTask("Task 5"));
-       taskArrayList.add(new ModelTask("Task 6"));
-              taskArrayList.add(new ModelTask("Task 7"));
-              taskArrayList.add(new ModelTask("Task 8"));
-              taskArrayList.add(new ModelTask("Task 9"));
-              taskArrayList.add(new ModelTask("Task 6"));
-              taskArrayList.add(new ModelTask("Task 6"));
+        List<ModelUser> userList = new ArrayList<>();
+        FirebaseFirestore db;
+        db=FirebaseFirestore.getInstance();
 
-        AdapterTask adapterTask=new AdapterTask(taskArrayList);
-        recyclerView.setAdapter(adapterTask);
+
+        db.collection("User")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful())
+                    {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if(!querySnapshot.isEmpty()){
+                            // get matching user
+                            for (QueryDocumentSnapshot document: querySnapshot){
+                                ModelUser user =document.toObject(ModelUser.class);
+                                userList.add(user);
+                             AdapterTask   userAdapter = new AdapterTask(userList);
+                                recyclerView.setAdapter(userAdapter);
+
+                            }
+
+                        }
+                    }
+                });
+
 
     }
 
