@@ -3,12 +3,12 @@ package com.aqeel.to_do_list;
 public class ModelTask {
     private String taskName;
 
-    private boolean isCompleted;
+
+    public ModelTask() {
+    }
 
     public ModelTask(String taskName) {
         this.taskName = taskName;
-
-//        this.isCompleted = isCompleted;
     }
 
     public String getTaskName() {
@@ -16,12 +16,6 @@ public class ModelTask {
     }
 
 
-//    public boolean isCompleted() {
-//        return isCompleted;
-//    }
-//
-//    public void setCompleted(boolean completed) {
-//        isCompleted = completed;
-//    }
+    //
 }
 

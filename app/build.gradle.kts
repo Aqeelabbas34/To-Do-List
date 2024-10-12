@@ -37,7 +37,8 @@ android {
 }
 
 dependencies {
-
+    implementation ("com.google.android.gms:play-services-base:18.5.0")
+    implementation ("com.google.firebase:firebase-auth:23.0.0")
     implementation (libs.recyclerview)
     implementation (libs.lottie)
     implementation(libs.appcompat)

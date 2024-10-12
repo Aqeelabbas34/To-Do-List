@@ -47,12 +47,12 @@ public class TaskFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView recyclerView= binding.taskRV;
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        List<ModelUser> userList = new ArrayList<>();
+        List<ModelTask> taskList = new ArrayList<>();
         FirebaseFirestore db;
         db=FirebaseFirestore.getInstance();
 
 
-        db.collection("User")
+        db.collection("Task")
                 .get()
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful())
@@ -61,10 +61,10 @@ public class TaskFragment extends Fragment {
                         if(!querySnapshot.isEmpty()){
                             // get matching user
                             for (QueryDocumentSnapshot document: querySnapshot){
-                                ModelUser user =document.toObject(ModelUser.class);
-                                userList.add(user);
-                             AdapterTask   userAdapter = new AdapterTask(userList);
-                                recyclerView.setAdapter(userAdapter);
+                                ModelTask userTask =document.toObject(ModelTask.class);
+                                taskList.add(userTask);
+                             AdapterTask   taskAdapter = new AdapterTask(taskList);
+                                recyclerView.setAdapter(taskAdapter);
 
                             }
 

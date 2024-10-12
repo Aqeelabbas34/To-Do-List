@@ -1,5 +1,6 @@
 package com.aqeel.to_do_list;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder> {
-    private  List<ModelUser> userList ;
+    private  List<ModelTask>  modelTaskList ;
 
-    public AdapterTask(List<ModelUser> userList) {
-        this.userList = userList;
+
+    public AdapterTask(List<ModelTask> taskList) {
+        this.modelTaskList=taskList;
     }
   // inflate layout with item
     @NonNull
@@ -29,31 +29,29 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
   // works as loop creates new item
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-   ModelUser currentUser=userList.get(position);
-  holder.nameTextView.setText(currentUser.name);
-  holder.emailTextView.setText(currentUser.email);
-  holder.passwordTextView.setText(currentUser.password);
+
+      ModelTask currentTask= modelTaskList.get(position);
+        Log.d("AdapterTask", "Binding task: " + currentTask.getTaskName());
+      holder.taskTV.setText(currentTask.getTaskName());
 
 
     }
   // gets the size of list
     @Override
     public int getItemCount() {
-        return userList.size();
+        return modelTaskList.size();
     }
+
     //item view holder holds the item
     public  static class ItemViewHolder extends RecyclerView.ViewHolder{
 
-        public  TextView nameTextView;
-        public TextView  emailTextView;
-        public  TextView passwordTextView;
+        public  TextView taskTV;
+
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
-          emailTextView =itemView.findViewById(R.id.emailET);
-          passwordTextView=itemView.findViewById(R.id.passwordET);
-          nameTextView=itemView.findViewById(R.id.userName);
+         taskTV=itemView.findViewById(R.id.taskTitle);
         }
     }
 

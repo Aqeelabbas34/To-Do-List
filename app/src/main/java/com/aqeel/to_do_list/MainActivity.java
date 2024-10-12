@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -21,12 +22,14 @@ import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     BottomAppBar bottomAppBar;
     ActivityMainBinding binding;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        //Innitialize Firebase
+        db= FirebaseFirestore.getInstance();
+
         bottomAppBar = findViewById(R.id.bottom_app_bar);
         setSupportActionBar(bottomAppBar);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -82,6 +88,32 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             View dialogeView = LayoutInflater.from(this).inflate(R.layout.custom_dialoge, null);
             CustomDialogeBinding binding1;
             binding1 = CustomDialogeBinding.inflate(getLayoutInflater());
+            //save task to firebase
+            binding1.saveBtnId.setOnClickListener(view12 -> {
+                String enteredTask= binding1.enterTaskET.getText().toString();
+                //get id from signup through intent
+                String ID = getIntent().getStringExtra("userID");
+                //save task with user id
+               if (ID!=null)
+               {
+                   ModelTask modelTask= new ModelTask(enteredTask);
+                   db.collection("User")
+                           .document(ID)
+                           .collection("Task")
+                           .add(modelTask)
+                           .addOnSuccessListener(documentReference -> {
+                               Toast.makeText(MainActivity.this,"Task saved",Toast.LENGTH_SHORT).show();
+                           })
+                           .addOnFailureListener(e -> {
+                               Toast.makeText(MainActivity.this,"Failed to save task",Toast.LENGTH_SHORT).show();
+                           });
+
+               }
+               else {
+                   Toast.makeText(MainActivity.this,"Email is null",Toast.LENGTH_SHORT).show();
+               }
+
+            });
 
             binding1.cardViewCategoryId.setOnClickListener(view1 -> {
                 Dialog customDialog = new Dialog(this);
@@ -114,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     }
 
+    TaskFragment taskFragment = new TaskFragment();
     Person_fragment personFragment = new Person_fragment();
     Calender_fragment calenderFragment = new Calender_fragment();
 
