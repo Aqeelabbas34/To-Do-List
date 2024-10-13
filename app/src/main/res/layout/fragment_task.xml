@@ -225,11 +225,12 @@
 
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/task_RV"
+                android:id="@+id/task_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="10dp"
                 android:visibility="visible"
+                android:background="@android:color/holo_blue_light"
              />
 
         </LinearLayout>

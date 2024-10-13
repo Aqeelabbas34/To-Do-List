@@ -8,11 +8,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.SearchView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.aqeel.to_do_list.databinding.FragmentTaskBinding;
@@ -28,16 +30,20 @@ import java.util.List;
 public class TaskFragment extends Fragment {
 
     FragmentTaskBinding binding;
+    AdapterTask taskAdapter;
+    List<ModelTask> taskList ;
+    RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment for creating UI
-
         binding =FragmentTaskBinding.inflate(inflater,container,false);
         View view=binding.getRoot();
         binding.searchIcon.setOnClickListener(view1 ->showSearchBar());
         binding.cancelIcon.setOnClickListener(View -> hideSearchBar());
+
+
         return view;
 
     }
@@ -45,36 +51,61 @@ public class TaskFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView= binding.taskRV;
+
+
+        recyclerView= view.findViewById(R.id.task_recyclerView);
+        taskList = new ArrayList<>();
+        taskAdapter= new AdapterTask(taskList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        List<ModelTask> taskList = new ArrayList<>();
-        FirebaseFirestore db;
-        db=FirebaseFirestore.getInstance();
+        recyclerView.setAdapter(taskAdapter);
+
+       /* taskList.add(new ModelTask("Test task 1"));
+        taskList.add(new ModelTask("Test task 2"));*/
+        taskAdapter.notifyDataSetChanged();
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String userId= bundle.getString("userID");
+            fetchTask(userId);
+        }
+    }
+private void fetchTask(String userid) {
+    FirebaseFirestore db;
+    db = FirebaseFirestore.getInstance();
 
 
-        db.collection("Task")
+    db.collection("User")
+                .document(userid)
+                .collection("Task")
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful())
-                    {
+                    if (task.isSuccessful()) {
+                        taskList.clear();
                         QuerySnapshot querySnapshot = task.getResult();
-                        if(!querySnapshot.isEmpty()){
-                            // get matching user
-                            for (QueryDocumentSnapshot document: querySnapshot){
-                                ModelTask userTask =document.toObject(ModelTask.class);
+                        if (querySnapshot!=null && !querySnapshot.isEmpty() ) {
+                            // get matching task id
+                            for (QueryDocumentSnapshot document : querySnapshot) {
+                                ModelTask userTask = document.toObject(ModelTask.class);
                                 taskList.add(userTask);
-                             AdapterTask   taskAdapter = new AdapterTask(taskList);
-                                recyclerView.setAdapter(taskAdapter);
+                                Log.d("Firebase_Data", "Task retrieved: " + userTask.getTaskName()); // Log each task retrieved
 
                             }
+                            Log.d("FirebaseData", "Tasks retrieved: " + taskList.size());
+                            taskAdapter.notifyDataSetChanged();
+                            }
+
 
                         }
-                    }
+                        else {
+                            Log.e("FirestoreError", "Error getting documents.", task.getException());
+                            Toast.makeText(this.getActivity(), "No task found", Toast.LENGTH_SHORT).show();
+                        }
+
+
+
                 });
 
-
     }
-
     private void showSearchBar(){
         binding.textTaskId.setVisibility(View.GONE);
         binding.searchIcon.setVisibility(View.GONE);

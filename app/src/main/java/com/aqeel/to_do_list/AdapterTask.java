@@ -31,8 +31,8 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
       ModelTask currentTask= modelTaskList.get(position);
-        Log.d("AdapterTask", "Binding task: " + currentTask.getTaskName());
-      holder.taskTV.setText(currentTask.getTaskName());
+        Log.d("AdapterTask", "Binding task: " + currentTask.taskName);
+      holder.taskTV.setText(currentTask.taskName);
 
 
     }

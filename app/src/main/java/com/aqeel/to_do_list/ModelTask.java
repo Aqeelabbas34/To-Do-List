@@ -1,7 +1,8 @@
 package com.aqeel.to_do_list;
 
 public class ModelTask {
-    private String taskName;
+
+     String taskName;
 
 
     public ModelTask() {
