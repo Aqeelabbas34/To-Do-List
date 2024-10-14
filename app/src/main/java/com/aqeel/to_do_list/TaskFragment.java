@@ -61,8 +61,8 @@ public class TaskFragment extends Fragment {
         taskList.add(new ModelTask("Test task 2"));*/
 
 //        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        Intent intent = new Intent();
-        String userId = intent.getStringExtra("userID");
+
+        String userId = UserSession.getInstance().getUserID();
         fetchTask(userId);
     }
 
@@ -72,6 +72,7 @@ public class TaskFragment extends Fragment {
 
 
         db.collection("Task")
+                .whereEqualTo("userID",userid)
                 .addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {
                         Toast.makeText(requireActivity(), "Failed to get task", Toast.LENGTH_SHORT).show();

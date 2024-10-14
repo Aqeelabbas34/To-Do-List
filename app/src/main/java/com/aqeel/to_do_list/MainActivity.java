@@ -93,8 +93,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             binding1.saveBtnId.setOnClickListener(view12 -> {
                 String enteredTask= binding1.enterTaskET.getText().toString();
                 //get id from signup through intent
-                String ID = getIntent().getStringExtra("userID");
+                String ID = UserSession.getInstance().getUserID();
                 //save task with user id
+                Toast.makeText(this, "id:"+ID, Toast.LENGTH_SHORT).show();
                if (ID!=null)
                {
                    ModelTask modelTask= new ModelTask(enteredTask,ID);
