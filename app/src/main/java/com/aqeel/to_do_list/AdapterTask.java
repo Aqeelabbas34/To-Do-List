@@ -1,5 +1,6 @@
 package com.aqeel.to_do_list;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder> {
+    private Context context;
     private  List<ModelTask>  modelTaskList ;
 
 
-    public AdapterTask(List<ModelTask> taskList) {
+
+    public AdapterTask( Context context,List<ModelTask> taskList) {
+        this.context=context;
         this.modelTaskList=taskList;
     }
   // inflate layout with item
@@ -53,6 +57,10 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
 
          taskTV=itemView.findViewById(R.id.taskTitle);
         }
+    }
+    public void updateList(List<ModelTask> newTask){
+        this.modelTaskList.clear();
+        this.modelTaskList.addAll(newTask);
     }
 
 }

@@ -58,16 +58,10 @@ public class LoginActivity extends AppCompatActivity {
                                 ModelUser modelUser=document.toObject(ModelUser.class);
                                 if (modelUser.getPassword().equals(enteredPassword)){
                                     Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                                    String userId= document.getId();
                                     Intent intent= new Intent(LoginActivity.this,MainActivity.class);
-                                    intent.putExtra("userID",userId);
-                                    // sending id to taskFragment
-                                    TaskFragment taskFragment = new TaskFragment();
-                                    Bundle bundle= new Bundle();
-                                    bundle.putString("userID",userId);
-                                    taskFragment.setArguments(bundle);
-
+                                    intent.putExtra("userID",enteredEmail);
                                     startActivity(intent);
+                                    finish();
                                 }
                                 else {
                                     Toast.makeText(LoginActivity.this,"Incorrect Password",Toast.LENGTH_SHORT).show();

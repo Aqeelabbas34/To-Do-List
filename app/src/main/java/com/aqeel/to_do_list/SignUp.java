@@ -60,10 +60,10 @@ public class SignUp extends AppCompatActivity {
                                    db.collection("User").add(modelUser)
                                            .addOnSuccessListener(documentReference -> {
                                                Toast.makeText(SignUp.this, "Signup successful", Toast.LENGTH_LONG).show();
-                                               String userId= documentReference.getId();
                                                Intent intent= new Intent(SignUp.this,MainActivity.class);
-                                               intent.putExtra("userID",userId);
+                                               intent.putExtra("userID",mail);
                                                startActivity(intent);
+                                               finish();
                                            })
                                            .addOnFailureListener(e -> {
                                                Toast.makeText(SignUp.this, "Signup failed", Toast.LENGTH_SHORT).show();

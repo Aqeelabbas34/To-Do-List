@@ -1,6 +1,7 @@
 package com.aqeel.to_do_list;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -96,10 +97,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 //save task with user id
                if (ID!=null)
                {
-                   ModelTask modelTask= new ModelTask(enteredTask);
-                   db.collection("User")
-                           .document(ID)
-                           .collection("Task")
+                   ModelTask modelTask= new ModelTask(enteredTask,ID);
+                   db.collection("Task")
                            .add(modelTask)
                            .addOnSuccessListener(documentReference -> {
                                Toast.makeText(MainActivity.this,"Task saved",Toast.LENGTH_SHORT).show();
