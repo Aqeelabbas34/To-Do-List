@@ -48,6 +48,7 @@ public class SignUp extends AppCompatActivity {
 
 
               else {
+                  //register user
                    db.collection("User")
                            .whereEqualTo("email", mail)
                            .get()
