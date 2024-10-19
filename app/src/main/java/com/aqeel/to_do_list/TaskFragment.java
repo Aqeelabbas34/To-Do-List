@@ -80,7 +80,9 @@ public class TaskFragment extends Fragment {
                     taskList.clear();
                     if (querySnapshot != null && !querySnapshot.isEmpty()) {
                         for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
+                            String taskID= documentSnapshot.getId();
                             ModelTask userTask = documentSnapshot.toObject(ModelTask.class);
+                            userTask.setTasKID(taskID);
                             taskList.add(userTask);
                         }
                         if (taskAdapter == null) {

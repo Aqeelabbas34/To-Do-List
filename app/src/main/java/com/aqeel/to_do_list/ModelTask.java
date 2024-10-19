@@ -3,8 +3,9 @@ package com.aqeel.to_do_list;
 public class ModelTask {
 
      String taskName;
-
+     String tasKID;
      String userID;
+     boolean isComplete;
     public ModelTask() {
     }
 
@@ -22,5 +23,21 @@ public class ModelTask {
         return userID;
     }
     //
+
+    public String getTasKID() {
+        return tasKID;
+    }
+
+    public void setTasKID(String tasKID) {
+        this.tasKID = tasKID;
+    }
+
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
+    }
 }
 
