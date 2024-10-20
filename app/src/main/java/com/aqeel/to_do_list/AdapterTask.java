@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder> {
     private Context context;
@@ -44,9 +47,13 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
       holder.taskTV.setText(currentTask.taskName);
       holder.taskChecked.setOnCheckedChangeListener(null);
       holder.taskChecked.setChecked(currentTask.isComplete());
+      holder.timeStampTV.setText(formatTimestamp(currentTask.getTimeStamp()));
       holder.taskChecked.setOnCheckedChangeListener((compoundButton, isChecked) -> {
        if (isChecked){
+           holder.itemView.setVisibility(View.INVISIBLE);
+           if (position!=RecyclerView.NO_POSITION){
            removeTask(currentTask,position);
+           }
        }
       });
 
@@ -57,36 +64,48 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
     public int getItemCount() {
         return modelTaskList.size();
     }
-
+    private String formatTimestamp(long timestamp) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM  hh:mm", Locale.getDefault());
+        return dateFormat.format(new Date(timestamp));
+    }
     //item view holder holds the item
     public  static class ItemViewHolder extends RecyclerView.ViewHolder{
 
         public  TextView taskTV;
         public CheckBox taskChecked;
+        public  TextView timeStampTV;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
          taskTV=itemView.findViewById(R.id.taskTitle);
          taskChecked= itemView.findViewById(R.id.task_checkBox);
+         timeStampTV= itemView.findViewById(R.id.timeStamp);
         }
     }
     public void updateList(List<ModelTask> newTask){
         this.modelTaskList.clear();
         this.modelTaskList.addAll(newTask);
+        this.notifyDataSetChanged();
     }
+   public void addTask(ModelTask task) {
+       this.modelTaskList.add(task); // Add the new task to the list
+       notifyItemInserted(modelTaskList.size() - 1); // Notify the adapter about the new task
+   }
     private void removeTask(ModelTask task , int position){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Task")
                 .document(task.getTasKID())
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
+                .addOnSuccessListener(unused -> {
+                    if(position>=0 && position< modelTaskList.size()){
                         modelTaskList.remove(position);
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position,modelTaskList.size());
+                    }else {
+                        Log.e("AdapterTask", "Invalid index: " + position + " for list size: " + modelTaskList.size());
                     }
+
                 }).addOnFailureListener(e -> Log.w("AdapterTask","Error deleting task",e));
     }
 

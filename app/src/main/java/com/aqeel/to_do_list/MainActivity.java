@@ -25,12 +25,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     BottomAppBar bottomAppBar;
     ActivityMainBinding binding;
     FirebaseFirestore db;
+    List<ModelTask> modelTaskList;
+    AdapterTask adapterTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(binding.getRoot());
         //Innitialize Firebase
         db= FirebaseFirestore.getInstance();
-
         bottomAppBar = findViewById(R.id.bottom_app_bar);
         setSupportActionBar(bottomAppBar);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -95,18 +99,30 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 //get id from signup through intent
                 String ID = UserSession.getInstance().getUserID();
                 //save task with user id
-                Toast.makeText(this, "id:"+ID, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "id:"+ID, Toast.LENGTH_SHORT).show();
                if (ID!=null)
                {
-                   ModelTask modelTask= new ModelTask(enteredTask,ID);
+                   long currentTimeMillis= System.currentTimeMillis();
+                   ModelTask modelTask= new ModelTask(enteredTask,ID,currentTimeMillis);
                    db.collection("Task")
                            .add(modelTask)
                            .addOnSuccessListener(documentReference -> {
+                               modelTaskList= new ArrayList<>();
+                               modelTaskList.add(modelTask);
+                               adapterTask= new AdapterTask(this,modelTaskList);
+                               adapterTask.addTask(modelTask);
+                               adapterTask.notifyItemInserted(modelTaskList.size()-1);
+
+                              /* Bundle result = new Bundle();
+                               result.putBoolean("taskAdd",true);
+                               getSupportFragmentManager().setFragmentResult("requestKey",result);*/
                                Toast.makeText(MainActivity.this,"Task saved",Toast.LENGTH_SHORT).show();
                            })
                            .addOnFailureListener(e -> {
                                Toast.makeText(MainActivity.this,"Failed to save task",Toast.LENGTH_SHORT).show();
                            });
+                   binding1.enterTaskET.setText("");
+                   dialog.dismiss();
 
                }
                else {

@@ -6,12 +6,16 @@ public class ModelTask {
      String tasKID;
      String userID;
      boolean isComplete;
+     long timeStamp;
     public ModelTask() {
     }
 
-    public ModelTask(String taskName, String userID) {
+
+
+    public ModelTask(String taskName, String userID,long timeStamp) {
         this.taskName = taskName;
         this.userID = userID;
+        this.timeStamp=timeStamp;
     }
 
 
@@ -23,6 +27,14 @@ public class ModelTask {
         return userID;
     }
     //
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
     public String getTasKID() {
         return tasKID;

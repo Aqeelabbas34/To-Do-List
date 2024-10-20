@@ -1,5 +1,6 @@
 package com.aqeel.to_do_list;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,12 +10,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aqeel.to_do_list.databinding.FragmentTaskBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -64,6 +68,12 @@ public class TaskFragment extends Fragment {
 
         String userId = UserSession.getInstance().getUserID();
         fetchTask(userId);
+        getParentFragmentManager().setFragmentResultListener("requestKey", this, (requestKey, result) -> {
+         boolean taskAdded= result.getBoolean("taskAdd");
+         if (taskAdded){
+             fetchTask(userId);
+         }
+        });
     }
 
     private void fetchTask(String userid) {
@@ -73,6 +83,7 @@ public class TaskFragment extends Fragment {
 
         db.collection("Task")
                 .whereEqualTo("userID",userid)
+
                 .addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {
                         Toast.makeText(requireActivity(), "Failed to get task", Toast.LENGTH_SHORT).show();
@@ -90,11 +101,15 @@ public class TaskFragment extends Fragment {
                             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                             recyclerView.setAdapter(taskAdapter);
                         } else {
-                            taskAdapter.updateList(taskList);
+//                            taskAdapter.updateList(taskList);
+                            taskAdapter.notifyDataSetChanged();
                         }
 
                     } else {
-                        Toast.makeText(requireActivity(), "Task   not found", Toast.LENGTH_SHORT).show();
+                        Activity activity= getActivity();
+                        if (activity!= null){
+                            Toast.makeText(activity, "Task not found", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
