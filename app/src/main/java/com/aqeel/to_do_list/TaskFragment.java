@@ -80,10 +80,9 @@ public class TaskFragment extends Fragment {
         FirebaseFirestore db;
         db = FirebaseFirestore.getInstance();
 
-
+        //fetching tasks from firebase
         db.collection("Task")
                 .whereEqualTo("userID",userid)
-
                 .addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {
                         Toast.makeText(requireActivity(), "Failed to get task", Toast.LENGTH_SHORT).show();
