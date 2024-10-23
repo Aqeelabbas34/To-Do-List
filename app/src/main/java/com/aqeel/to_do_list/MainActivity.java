@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.nav_open, R.string.nav_close);
         actionBarDrawerToggle.syncState();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
+        //set selected fragment
         bottomNavigationView.setSelectedItemId(R.id.tasks_id);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, new TaskFragment())
