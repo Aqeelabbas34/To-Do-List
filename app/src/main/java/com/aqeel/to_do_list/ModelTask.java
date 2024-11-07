@@ -7,6 +7,7 @@ public class ModelTask {
      String userID;
      boolean isComplete;
      long timeStamp;
+     int date;
     public ModelTask() {
     }
 
@@ -16,6 +17,7 @@ public class ModelTask {
         this.taskName = taskName;
         this.userID = userID;
         this.timeStamp=timeStamp;
+//        this.date=date;
     }
 
 
@@ -30,6 +32,14 @@ public class ModelTask {
 
     public long getTimeStamp() {
         return timeStamp;
+    }
+
+    public int getDate() {
+        return date;
+    }
+
+    public void setDate(int date) {
+        this.date = date;
     }
 
     public void setTimeStamp(long timeStamp) {

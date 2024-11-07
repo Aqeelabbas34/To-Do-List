@@ -184,6 +184,10 @@
                            android:layout_margin="20dp"
                            android:textStyle="bold"
                            android:textColor="#AAAAAA"/>
+                       <com.github.mikephil.charting.charts.BarChart
+                           android:id="@+id/barChart"
+                           android:layout_width="match_parent"
+                           android:layout_height="400dp"/>
 
 
                    </RelativeLayout>

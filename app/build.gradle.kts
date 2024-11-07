@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
 }
 
+
 android {
     namespace = "com.aqeel.to_do_list"
     compileSdk = 34
@@ -37,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation (libs.mpandroidchart)
     implementation ("com.google.android.gms:play-services-base:18.5.0")
     implementation ("com.google.firebase:firebase-auth:23.0.0")
     implementation (libs.recyclerview)

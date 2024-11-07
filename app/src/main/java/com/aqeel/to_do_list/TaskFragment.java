@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class TaskFragment extends Fragment {
@@ -83,25 +84,36 @@ public class TaskFragment extends Fragment {
         //fetching tasks from firebase
         db.collection("Task")
                 .whereEqualTo("userID",userid)
+                .orderBy("timeStamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {
-                        Toast.makeText(requireActivity(), "Failed to get task", Toast.LENGTH_SHORT).show();
+                        if (isAdded())
+                        {
+                            Toast.makeText(requireActivity(), "Failed to get task", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
-                    taskList.clear();
+                      taskList.clear();
                     if (querySnapshot != null && !querySnapshot.isEmpty()) {
                         for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
                             String taskID= documentSnapshot.getId();
                             ModelTask userTask = documentSnapshot.toObject(ModelTask.class);
                             userTask.setTasKID(taskID);
-                            taskList.add(userTask);
+
+                            taskList .add(userTask);
                         }
-                        if (taskAdapter == null) {
-                            taskAdapter = new AdapterTask(requireContext(), taskList);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                            recyclerView.setAdapter(taskAdapter);
-                        } else {
-//                            taskAdapter.updateList(taskList);
-                            taskAdapter.notifyDataSetChanged();
+
+                        if (isAdded()){
+                            requireActivity().runOnUiThread(()->{
+                                if (taskAdapter == null) {
+                                    taskAdapter = new AdapterTask(requireContext(), taskList);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                                    recyclerView.setAdapter(taskAdapter);
+                                } else {
+                               //     taskAdapter.updateList(taskList);
+                                    taskAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
 
                     } else {

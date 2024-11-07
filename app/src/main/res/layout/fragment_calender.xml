@@ -19,69 +19,31 @@
         android:textSize="28sp"
         android:textStyle="bold"
         android:textColor="@color/grey"
-        android:layout_margin="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
         />
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/calender_card_view"
         android:layout_below="@id/calender_TV_ID"
-        android:layout_margin="15dp"
+        android:layout_marginHorizontal="15dp"
         app:cardCornerRadius="15dp"
         >
         <CalendarView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:id="@+id/calender_view"
 
             android:layout_below="@id/calender_TV_ID"/>
     </androidx.cardview.widget.CardView>
-  <!--  <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/content_frame2"
-        >
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottom_app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:backgroundTint="@color/white"
-            app:fabAlignmentMode="center"
-            app:fabAnchorMode="cradle"
-            app:fabCradleMargin="10dp"
-            app:fabCradleRoundedCornerRadius="50dp"
-            app:fabCradleVerticalOffset="10dp"
-
-            >
-
-            <com.google.android.material.bottomnavigation.BottomNavigationView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/bottom_nav_view"
-                android:background="@android:color/transparent"
-                app:itemActiveIndicatorStyle="@null"
-                app:labelVisibilityMode="unlabeled"
-                app:menu="@menu/bottom_menue" />
-
-        </com.google.android.material.bottomappbar.BottomAppBar>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/grey"
-            android:id="@+id/add_btn"
-            android:src="@drawable/add"
-            android:tint="@color/black"
-            android:contentDescription="@string/app_name"
-            app:layout_anchor="@id/bottom_app_bar"
-            app:shapeAppearanceOverlay="@style/fab_style" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+   <androidx.recyclerview.widget.RecyclerView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_below="@id/calender_card_view"
+       android:layout_marginTop="10dp"
+       android:layout_marginHorizontal="10dp"
+       android:id="@+id/task_recyclerView"/>
 </RelativeLayout>
 
 </FrameLayout>

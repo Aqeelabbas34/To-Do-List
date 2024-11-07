@@ -50,9 +50,10 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
       holder.timeStampTV.setText(formatTimestamp(currentTask.getTimeStamp()));
       holder.taskChecked.setOnCheckedChangeListener((compoundButton, isChecked) -> {
        if (isChecked){
-           holder.itemView.setVisibility(View.INVISIBLE);
+//           holder.itemView.setVisibility(View.INVISIBLE);
            if (position!=RecyclerView.NO_POSITION){
            removeTask(currentTask,position);
+           updateList(modelTaskList);
            }
        }
       });
