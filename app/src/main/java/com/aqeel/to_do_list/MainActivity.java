@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 String enteredTask= binding1.enterTaskET.getText().toString();
                 //get id from signup through intent
                 String ID = UserSession.getInstance().getUserID();
+                TaskCounter.getInstance().addTaskToPending();
                 //save task with user id
 //                Toast.makeText(this, "id:"+ID, Toast.LENGTH_SHORT).show();
                if (ID!=null)

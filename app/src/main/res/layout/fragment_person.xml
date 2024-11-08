@@ -112,7 +112,7 @@
                             android:layout_height="match_parent"
                             >
                             <TextView
-                                android:id="@+id/pendingTaskCount"
+                                android:id="@+id/completeTaskCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
@@ -143,7 +143,7 @@
                             android:layout_height="match_parent"
                             >
                             <TextView
-                                android:id="@+id/completeTaskCount"
+                                android:id="@+id/pendingTaskCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"

@@ -58,7 +58,8 @@ public class SignUp extends AppCompatActivity {
                                    Toast.makeText(SignUp.this, "Email already registered", Toast.LENGTH_LONG).show();
                                } else {
                                    ModelUser modelUser = new ModelUser(name, mail, password);
-                                   db.collection("User").add(modelUser)
+                                   db.collection("User")
+                                           .add(modelUser)
                                            .addOnSuccessListener(documentReference -> {
                                                Toast.makeText(SignUp.this, "Signup successful", Toast.LENGTH_LONG).show();
                                              Intent intent= new Intent(SignUp.this,MainActivity.class);
