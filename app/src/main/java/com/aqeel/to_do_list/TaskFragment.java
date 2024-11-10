@@ -32,13 +32,14 @@ public class TaskFragment extends Fragment {
     AdapterTask taskAdapter;
     List<ModelTask> taskList;
     RecyclerView recyclerView;
-
+    SharedPref sharedPref;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment for creating UI
         binding = FragmentTaskBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+        sharedPref = new SharedPref(requireContext());
         binding.searchIcon.setOnClickListener(view1 -> showSearchBar());
         binding.cancelIcon.setOnClickListener(View -> hideSearchBar());
         binding.templateIcon.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +85,7 @@ public class TaskFragment extends Fragment {
         //fetching tasks from firebase
         db.collection("Task")
                 .whereEqualTo("userID",userid)
+                .whereEqualTo("status","pending")
                 .orderBy("timeStamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {

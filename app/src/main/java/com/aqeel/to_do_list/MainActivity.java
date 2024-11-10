@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     FirebaseFirestore db;
     List<ModelTask> modelTaskList;
     AdapterTask adapterTask;
+    String selectedCategory="All";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,18 +98,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             View dialogeView = LayoutInflater.from(this).inflate(R.layout.custom_dialoge, null);
             CustomDialogeBinding binding1;
             binding1 = CustomDialogeBinding.inflate(getLayoutInflater());
+
             //save task to firebase
             binding1.saveBtnId.setOnClickListener(view12 -> {
                 String enteredTask= binding1.enterTaskET.getText().toString();
                 //get id from signup through intent
                 String ID = UserSession.getInstance().getUserID();
+                String status= "pending";
+
                 TaskCounter.getInstance().addTaskToPending();
                 //save task with user id
 //                Toast.makeText(this, "id:"+ID, Toast.LENGTH_SHORT).show();
                if (ID!=null)
                {
                    long currentTimeMillis= System.currentTimeMillis();
-                   ModelTask modelTask= new ModelTask(enteredTask,ID,currentTimeMillis);
+                   ModelTask modelTask= new ModelTask(enteredTask,ID,currentTimeMillis,status,selectedCategory);
                    db.collection("Task")
                            .add(modelTask)
                            .addOnSuccessListener(documentReference -> {
@@ -140,9 +147,39 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 customDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 customDialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.round_corner));
                 customDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                customDialog.show();
-                customDialog.setCancelable(true);
 
+                RadioButton radioButtonALL =customDialogView.findViewById(R.id.radioALL);
+                RadioButton radioButtonWork = customDialogView.findViewById(R.id.radioWork);
+                RadioButton radioButtonPersonal = customDialogView.findViewById(R.id.radioPersonal);
+                RadioButton radioButtonWish = customDialogView.findViewById(R.id.wishList);
+                RadioButton radioButtonBirthday = customDialogView.findViewById(R.id.radioBirthday);
+                Button saveBtn = customDialogView.findViewById(R.id.save_catg_btn);
+                radioButtonALL.setOnCheckedChangeListener((button, isChecked) -> {
+                    if(isChecked){
+                        selectedCategory="All";
+                    }
+                }); radioButtonWork.setOnCheckedChangeListener((button, isChecked) -> {
+                    if (isChecked){
+                     selectedCategory="Work";}
+                }); radioButtonPersonal.setOnCheckedChangeListener((button, isChecked) -> {
+                    if (isChecked){
+                     selectedCategory="personal";}
+                }); radioButtonWish.setOnCheckedChangeListener((button, isChecked) -> {
+                    if (isChecked){
+                        selectedCategory="Wishlist";
+                    }
+
+                });radioButtonBirthday.setOnCheckedChangeListener((button, isChecked) -> {
+                    if (isChecked){
+                     selectedCategory="Birthday";}
+                });
+
+                customDialog.show();
+                customDialog.setCancelable(false);
+                saveBtn.setOnClickListener(View->{
+                     customDialog.dismiss();
+                     Toast.makeText(MainActivity.this,"category :"+ selectedCategory,Toast.LENGTH_SHORT).show();
+                });
 
             });
             binding1.calenderDialogeId.setOnClickListener(view2 -> {

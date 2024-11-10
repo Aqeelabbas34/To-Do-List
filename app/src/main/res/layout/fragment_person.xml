@@ -186,6 +186,7 @@
                            android:textColor="#AAAAAA"/>
                        <com.github.mikephil.charting.charts.BarChart
                            android:id="@+id/barChart"
+                           android:layout_below="@id/tv_id_progress"
                            android:layout_width="match_parent"
                            android:layout_height="400dp"/>
 

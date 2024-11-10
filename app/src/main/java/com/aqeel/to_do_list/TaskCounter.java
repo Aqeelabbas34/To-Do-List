@@ -32,20 +32,9 @@ public class TaskCounter {
         }
     }
 
-    public int getCompletedTaskCountForDay(int dayIndex) {
-        if (dayIndex >= 0 && dayIndex < 7) {
-            return dailyCompletedTasks[dayIndex];
-        }
-        return 0;
-    }
 
-    public void addCompletedTaskForDay(int dayIndex) {
-        if (dayIndex >= 0 && dayIndex < 7) {
-            dailyCompletedTasks[dayIndex]++;
-        }
-    }
 
-    public void resetDailyCounts() {
-        Arrays.fill(dailyCompletedTasks, 0);
-    }
+
+
+
 }

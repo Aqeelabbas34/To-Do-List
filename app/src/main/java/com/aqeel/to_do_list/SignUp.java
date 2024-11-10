@@ -23,7 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class SignUp extends AppCompatActivity {
     FirebaseFirestore db;
     ActivitySignUpBinding binding;
-
+    SharedPref sharedPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +58,8 @@ public class SignUp extends AppCompatActivity {
                                    Toast.makeText(SignUp.this, "Email already registered", Toast.LENGTH_LONG).show();
                                } else {
                                    ModelUser modelUser = new ModelUser(name, mail, password);
+                                   sharedPref=new SharedPref(this);
+                                   sharedPref.saveData(modelUser);
                                    db.collection("User")
                                            .add(modelUser)
                                            .addOnSuccessListener(documentReference -> {

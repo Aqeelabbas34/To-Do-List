@@ -49,6 +49,7 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/radioALL"
                 android:layout_alignParentEnd="true"
                 android:minHeight="48dp"
                 android:minWidth="48dp"
@@ -77,6 +78,7 @@
             <RadioButton
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:id="@+id/radioPersonal"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="15dp"/>
         </RelativeLayout>
@@ -103,6 +105,7 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/radioWork"
                 android:layout_alignParentEnd="true"
                 android:layout_margin="15dp"/>
         </RelativeLayout>
@@ -130,6 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:id="@+id/wishList"
                 android:layout_margin="15dp"/>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
@@ -156,6 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:id="@+id/radioBirthday"
                 android:layout_margin="15dp"/>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
@@ -163,6 +168,7 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         app:backgroundTint="@null"
+        android:id="@+id/save_catg_btn"
         android:background="@drawable/save_btn_bg"
         android:backgroundTint="@color/grey"
         android:layout_marginHorizontal="10dp"

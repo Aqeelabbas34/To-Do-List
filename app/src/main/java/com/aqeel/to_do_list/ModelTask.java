@@ -8,15 +8,36 @@ public class ModelTask {
      boolean isComplete;
      long timeStamp;
      int date;
+     String category;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    String status;
+
+
     public ModelTask() {
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public ModelTask(String taskName, String userID,long timeStamp) {
+    public ModelTask(String taskName, String userID, long timeStamp,String status,String category) {
         this.taskName = taskName;
         this.userID = userID;
         this.timeStamp=timeStamp;
+        this.status= status;
+        this.category=category;
 //        this.date=date;
     }
 
@@ -54,12 +75,5 @@ public class ModelTask {
         this.tasKID = tasKID;
     }
 
-    public boolean isComplete() {
-        return isComplete;
-    }
-
-    public void setComplete(boolean complete) {
-        isComplete = complete;
-    }
 }
 

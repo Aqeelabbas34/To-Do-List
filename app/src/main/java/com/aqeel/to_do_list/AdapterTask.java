@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -46,16 +47,19 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
         Log.d("AdapterTask", "Binding task: " + currentTask.taskName);
       holder.taskTV.setText(currentTask.taskName);
       holder.taskChecked.setOnCheckedChangeListener(null);
-      holder.taskChecked.setChecked(currentTask.isComplete());
+
       holder.timeStampTV.setText(formatTimestamp(currentTask.getTimeStamp()));
+        holder.taskChecked.setChecked(currentTask.getStatus().equals("complete"));
       holder.taskChecked.setOnCheckedChangeListener((compoundButton, isChecked) -> {
        if (isChecked){
+
            TaskCounter.getInstance().completeTask();
 //           holder.itemView.setVisibility(View.INVISIBLE);
            if (position!=RecyclerView.NO_POSITION){
-           removeTask(currentTask,position);
+           markComplete(currentTask,position);
            updateList(modelTaskList);
            }
+
        }
       });
 
@@ -94,13 +98,14 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
        this.modelTaskList.add(task); // Add the new task to the list
        notifyItemInserted(modelTaskList.size() - 1); // Notify the adapter about the new task
    }
-    private void removeTask(ModelTask task , int position){
+    private void markComplete(ModelTask task , int position){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Task")
                 .document(task.getTasKID())
-                .delete()
+                .update("status","complete")
                 .addOnSuccessListener(unused -> {
                     if(position>=0 && position< modelTaskList.size()){
+                        task.setStatus("pending");
                         modelTaskList.remove(position);
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position,modelTaskList.size());
