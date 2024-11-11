@@ -111,6 +111,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/card_ALL"
                     android:layout_marginHorizontal="15dp"
                     android:layout_marginVertical="10dp"
                     android:background="@drawable/category_bg"
@@ -122,6 +123,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/all_TV"
                         android:layout_marginHorizontal="12dp"
                         android:padding="3dp"
 
@@ -137,12 +139,14 @@
                     android:background="@drawable/category_bg"
                     android:backgroundTint="@color/skyBlue"
                     android:elevation="0dp"
+                    android:id="@+id/card_personal"
                     android:outlineSpotShadowColor="@android:color/transparent"
                     app:cardCornerRadius="10dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/personal_TV"
                         android:layout_marginHorizontal="10dp"
                         android:padding="3dp"
                         android:text="@string/category_Personal"
@@ -156,15 +160,17 @@
                     android:layout_marginHorizontal="15dp"
                     android:layout_marginVertical="10dp"
                     android:background="@drawable/category_bg"
+                    android:id="@+id/card_work"
                     android:backgroundTint="@color/skyBlue"
                     android:elevation="0dp"
                     android:outlineSpotShadowColor="@android:color/transparent"
                     app:cardCornerRadius="10dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
+                        android:id="@+id/work_TV"
                         android:padding="3dp"
                         android:text="@string/category_Job"
 
@@ -176,6 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="15dp"
                     android:layout_marginVertical="10dp"
+                    android:id="@+id/card_wishlist"
                     android:background="@drawable/category_bg"
                     android:backgroundTint="@color/skyBlue"
                     android:elevation="0dp"
@@ -183,8 +190,9 @@
                     app:cardCornerRadius="10dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/wishList_TV"
                         android:layout_marginHorizontal="10dp"
                         android:padding="3dp"
                         android:text="@string/category_Wish"
@@ -196,6 +204,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:id="@+id/card_birthday"
                     android:background="@drawable/category_bg"
                     android:backgroundTint="@color/skyBlue"
                     android:elevation="0dp"
@@ -203,9 +212,10 @@
                     app:cardCornerRadius="10dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="10dp"
+                        android:id="@+id/birthday_TV"
                         android:padding="3dp"
                         android:text="@string/category_Birthday"
                         android:textSize="15sp" />

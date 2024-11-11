@@ -21,11 +21,13 @@ import java.util.Objects;
 public class LoginActivity extends AppCompatActivity {
     FirebaseFirestore db;
     ActivityLoginBinding binding;
+    SharedPref sharedPref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         binding=ActivityLoginBinding.inflate(getLayoutInflater());
+        sharedPref=new SharedPref(this);
         setContentView(binding.getRoot());
         db=FirebaseFirestore.getInstance();
         binding.btnLogin.setOnClickListener(view -> {
@@ -58,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                                 ModelUser modelUser=document.toObject(ModelUser.class);
                                 if (modelUser.getPassword().equals(enteredPassword)){
                                     Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                                    sharedPref.setLoggedIn(true);
                                     Intent intent= new Intent(LoginActivity.this,MainActivity.class);
 //                                    intent.putExtra("userID",enteredEmail);
                                     UserSession.getInstance().setUserID(enteredEmail);

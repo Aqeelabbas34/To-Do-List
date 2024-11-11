@@ -5,9 +5,9 @@ public class ModelTask {
      String taskName;
      String tasKID;
      String userID;
-     boolean isComplete;
      long timeStamp;
-     int date;
+     String DueDate;
+     String time;
      String category;
 
     public String getCategory() {
@@ -32,15 +32,32 @@ public class ModelTask {
         this.status = status;
     }
 
-    public ModelTask(String taskName, String userID, long timeStamp,String status,String category) {
+    public ModelTask(String taskName, String userID, long timeStamp,String status,String category,String DueDate,String time) {
         this.taskName = taskName;
         this.userID = userID;
         this.timeStamp=timeStamp;
         this.status= status;
         this.category=category;
-//        this.date=date;
+        this.DueDate=DueDate;
+        this.time=time;
+
     }
 
+    public String getDueDate() {
+        return DueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        DueDate = dueDate;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getTaskName() {
         return taskName;
@@ -55,13 +72,7 @@ public class ModelTask {
         return timeStamp;
     }
 
-    public int getDate() {
-        return date;
-    }
 
-    public void setDate(int date) {
-        this.date = date;
-    }
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;

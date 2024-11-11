@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +36,8 @@ public class TaskFragment extends Fragment {
     List<ModelTask> taskList;
     RecyclerView recyclerView;
     SharedPref sharedPref;
+    String userId = UserSession.getInstance().getUserID();
+    View previousSelectedCard = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,6 +47,28 @@ public class TaskFragment extends Fragment {
         sharedPref = new SharedPref(requireContext());
         binding.searchIcon.setOnClickListener(view1 -> showSearchBar());
         binding.cancelIcon.setOnClickListener(View -> hideSearchBar());
+
+        binding.allTV.setOnClickListener(view1 -> {
+             fetchTask("All");
+
+
+        });
+        binding.personalTV.setOnClickListener(view1 -> {
+               fetchTask("personal");
+
+        });
+        binding.workTV.setOnClickListener(view1 -> {
+                fetchTask("Work");
+
+        });
+        binding.wishListTV.setOnClickListener(view1 -> {
+              fetchTask("Wishlist");
+
+        });
+        binding.birthdayTV.setOnClickListener(view1 -> {
+            fetchTask("Birthday");
+
+        });
         binding.templateIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,8 +86,20 @@ public class TaskFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.task_recyclerView);
         taskList = new ArrayList<>();
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String text) {
+               filterTask(text);
+               return true;
+            }
+        });
 
+        fetchTask("All");
 
 
        /* taskList.add(new ModelTask("Test task 1"));
@@ -68,32 +107,36 @@ public class TaskFragment extends Fragment {
 
 //        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        String userId = UserSession.getInstance().getUserID();
-        fetchTask(userId);
-        getParentFragmentManager().setFragmentResultListener("requestKey", this, (requestKey, result) -> {
+
+
+
+        /*getParentFragmentManager().setFragmentResultListener("requestKey", this, (requestKey, result) -> {
          boolean taskAdded= result.getBoolean("taskAdd");
          if (taskAdded){
              fetchTask(userId);
          }
-        });
+        });*/
     }
 
-    private void fetchTask(String userid) {
+    private void fetchTask(String category) {
         FirebaseFirestore db;
         db = FirebaseFirestore.getInstance();
 
         //fetching tasks from firebase
-        db.collection("Task")
-                .whereEqualTo("userID",userid)
+       Query taskQuery= db.collection("Task")
+                .whereEqualTo("userID",userId)
                 .whereEqualTo("status","pending")
-                .orderBy("timeStamp", Query.Direction.DESCENDING)
-                .addSnapshotListener((querySnapshot, error) -> {
+                .orderBy("timeStamp", Query.Direction.DESCENDING);
+               if(!category.equals("All")){
+                   taskQuery=taskQuery.whereEqualTo("category",category);
+               }
+               taskQuery .addSnapshotListener((querySnapshot, error) -> {
                     if (error != null) {
                         if (isAdded())
                         {
                             Toast.makeText(requireActivity(), "Failed to get task", Toast.LENGTH_SHORT).show();
                         }
-
+                         return;
                     }
                       taskList.clear();
                     if (querySnapshot != null && !querySnapshot.isEmpty()) {
@@ -159,6 +202,39 @@ public class TaskFragment extends Fragment {
                 });*/
 
     }
+    private void filterTask(String query){
+        List<ModelTask> filteredList= new ArrayList<>();
+        for (ModelTask task : taskList){
+            if (task.getTaskName().toLowerCase( ).contains(query.toLowerCase()))
+            {
+                filteredList.add(task);
+            }
+        }
+      updateTaskList(filteredList);
+    }
+    private void updateTaskList(List<ModelTask> filteredList) {
+        if (taskAdapter == null) {
+            taskAdapter = new AdapterTask(requireContext(), filteredList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(taskAdapter);
+        } else {
+            taskAdapter.updateList(filteredList);
+        }
+    }
+    private void onCardClick(CardView selectedCard) {
+        // If there was a previously selected card, reset its background color
+        if (previousSelectedCard != null) {
+            previousSelectedCard.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey));
+        }
+
+        // Set the background color of the currently clicked card
+        selectedCard.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey));
+
+        // Update the previously selected card to the current one
+        previousSelectedCard = selectedCard;
+
+
+    }
 
     private void showSearchBar() {
         binding.textTaskId.setVisibility(View.GONE);
@@ -180,6 +256,8 @@ public class TaskFragment extends Fragment {
         binding.searchView.setVisibility(View.GONE);
         binding.cancelIcon.setVisibility(View.GONE);
         binding.searchView.setQuery("", false);
+        binding.searchView.setQuery("", false); // Clear the search query
+        fetchTask("All"); // Re-fetch the task list when closing the search
 
     }
 

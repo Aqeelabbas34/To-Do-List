@@ -31,6 +31,7 @@
        <TextView
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
+           android:id="@+id/noDateId"
            android:text="No Date"
            android:background="@drawable/text_view_bg"
            android:paddingStart="5dp"
@@ -43,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Today"
+            android:id="@+id/todayTVId"
             android:layout_marginEnd="10dp"
             android:background="@drawable/text_view_bg"
             android:paddingStart="5dp"
@@ -55,6 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tomorrow"
+            android:id="@+id/tomorrowTVId"
             android:layout_marginEnd="10dp"
             android:background="@drawable/text_view_bg"
             android:paddingStart="5dp"
@@ -66,6 +69,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/nextWeekTVId"
             android:text="Next Week"
             android:background="@drawable/text_view_bg"
             android:paddingStart="5dp"
@@ -97,7 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:layout_marginHorizontal="25dp"
-
+        android:id="@+id/timePicker"
         android:elevation="4dp"
         app:cardBackgroundColor="#EEF4F4"
         app:cardCornerRadius="10dp">
@@ -128,6 +132,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="42dp"
+        android:id="@+id/reminderView"
         android:layout_marginHorizontal="25dp"
         android:layout_marginTop="8dp"
         android:elevation="4dp"
@@ -163,6 +168,7 @@
         android:layout_marginHorizontal="25dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="20dp"
+        android:id="@+id/repeatTV"
         android:elevation="4dp"
         app:cardBackgroundColor="#EEF4F4"
         app:cardCornerRadius="10dp">
@@ -181,7 +187,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Time"
+                android:text="Repeat"
                 android:layout_toRightOf="@id/repeat_icon"
                 android:textSize="18sp"
                 android:layout_centerVertical="true"
@@ -200,6 +206,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:text="cancel"
+            android:id="@+id/cancelBTN"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:layout_marginStart="10dp"
@@ -212,6 +219,7 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:text="Save"
+            android:id="@+id/saveBTn"
             android:textSize="20sp"
             android:textColor="@color/black"
             android:layout_marginStart="10dp"
