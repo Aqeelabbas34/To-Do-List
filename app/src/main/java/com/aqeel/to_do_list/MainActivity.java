@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //Innitialize Firebase
         db= FirebaseFirestore.getInstance();
         selectedCategory="All";
-        Calendar calendar = Calendar.getInstance();
+       /* Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR,1);
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         calendar.add(Calendar.HOUR_OF_DAY,24);
         int hour= calendar.get(Calendar.HOUR_OF_DAY);
         int minute= calendar.get(Calendar.MINUTE);
-        selectedTime = String.format("%02d:%02d", hour, minute);
+        selectedTime = String.format("%02d:%02d", hour, minute);*/
         bottomAppBar = findViewById(R.id.bottom_app_bar);
 
         setSupportActionBar(bottomAppBar);
@@ -144,6 +145,22 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 String status= "pending";
 
                 TaskCounter.getInstance().addTaskToPending();
+                if (selectedDueDate == null || selectedDueDate.isEmpty()) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DAY_OF_YEAR, 1);  // Set due date to tomorrow
+                    int year = calendar.get(Calendar.YEAR);
+                    int month = calendar.get(Calendar.MONTH) + 1;
+                    int day = calendar.get(Calendar.DAY_OF_MONTH);
+                    selectedDueDate = String.format("%04d-%02d-%02d", year, month, day);
+                }
+
+                if (selectedTime == null || selectedTime.isEmpty()) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.HOUR_OF_DAY, 24);  // Default time to 24 hours from now
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = calendar.get(Calendar.MINUTE);
+                    selectedTime = String.format("%02d:%02d", hour, minute);
+                }
                 //save task with user id
 //                Toast.makeText(this, "id:"+ID, Toast.LENGTH_SHORT).show();
                 if (ID!=null)
@@ -168,6 +185,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                 Toast.makeText(MainActivity.this,"Failed to save task",Toast.LENGTH_SHORT).show();
                             });
                     binding1.enterTaskET.setText("");
+                    selectedCategory="All";
+                    selectedDueDate= null;
+                    selectedTime= null;
                     dialog.dismiss();
 
                 }
@@ -233,10 +253,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         // Inflate the custom layout
         Dialog dialog= new Dialog(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.time_picker_dialoge, null);
-        setContentView(dialogView);
+        dialog.setContentView(dialogView);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.round_corner));
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.getWindow().setGravity(Gravity.CENTER);
         dialog.show();
 
         // Initialize the TimePicker and Save button
@@ -256,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             // For example, you could update a TextView with the selected time:
              selectedTime = String.format("%02d:%02d", hour, minute);
 
-
+             Toast.makeText(this,"Time saved",Toast.LENGTH_LONG).show();
             dialog.dismiss();
         });
 
@@ -302,6 +323,7 @@ private void chooseCategory(){
     saveBtn.setOnClickListener(View->{
         customDialog.dismiss();
         Toast.makeText(MainActivity.this,"category :"+ selectedCategory,Toast.LENGTH_SHORT).show();
+
     });
 }
 private  void taskScheduling(){
