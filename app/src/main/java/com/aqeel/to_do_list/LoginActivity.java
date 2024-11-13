@@ -34,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
 
             String mail= binding.EmailET.getText().toString();
             String pass=binding.paswordET.getText().toString();
+            ModelUser user = new ModelUser("",mail,pass);
+            sharedPref.saveData(user);
             if(!mail.isEmpty() && !pass.isEmpty()){
                     loginHandler(mail,pass);
             } else if (mail.isEmpty()) {

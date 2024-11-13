@@ -61,6 +61,7 @@
                         android:padding="15dp"
                         android:paddingEnd="10dp"
                         android:src="@drawable/template"
+                        android:visibility="invisible"
                         android:layout_centerVertical="true"
 
                         />

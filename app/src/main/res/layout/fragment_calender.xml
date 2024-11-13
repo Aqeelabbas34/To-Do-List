@@ -33,15 +33,16 @@
         <CalendarView
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:id="@+id/calender_view"
+            android:id="@+id/calender_id"
 
             android:layout_below="@id/calender_TV_ID"/>
     </androidx.cardview.widget.CardView>
    <androidx.recyclerview.widget.RecyclerView
        android:layout_width="match_parent"
-       android:layout_height="match_parent"
+       android:layout_height="wrap_content"
        android:layout_below="@id/calender_card_view"
        android:layout_marginTop="10dp"
+       android:visibility="visible"
        android:layout_marginHorizontal="10dp"
        android:id="@+id/task_recyclerView"/>
 </RelativeLayout>

@@ -29,8 +29,9 @@ import java.util.Calendar;
  */
 public class Person_fragment extends Fragment  {
 
-   TextView pendingCount,completeCount;
+   TextView pendingCount,completeCount,userName;
    BarChart barChart;
+   SharedPref sharedPref;
    FirebaseFirestore db ;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,10 +41,15 @@ public class Person_fragment extends Fragment  {
         pendingCount= view.findViewById(R.id.pendingTaskCount);
         completeCount=view.findViewById(R.id.completeTaskCount);
         barChart= view.findViewById(R.id.barChart);
+        userName= view.findViewById(R.id.userNameText);
+        sharedPref = new SharedPref(requireActivity());
         db= FirebaseFirestore.getInstance();
+
+
       setChartData();
-      String userID= UserSession.getInstance().getUserID();
-      getTaskCount(userID);
+        ModelUser user = sharedPref.getData();
+        String userId= user.getEmail();
+      getTaskCount(userId);
         return view;
     }
 

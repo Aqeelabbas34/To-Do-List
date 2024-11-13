@@ -1,6 +1,5 @@
 package com.aqeel.to_do_list;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 
 import com.aqeel.to_do_list.databinding.ActivityMainBinding;
 import com.aqeel.to_do_list.databinding.CustomDialogeBinding;
@@ -54,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     String selectedCategory;
     String selectedTime;
     String selectedDueDate;
+    SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(binding.getRoot());
         //Innitialize Firebase
         db= FirebaseFirestore.getInstance();
+        sharedPref = new SharedPref(this);
+        ModelUser user = new ModelUser();
         selectedCategory="All";
        /* Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR,1);
@@ -141,7 +141,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             binding1.saveBtnId.setOnClickListener(view12 -> {
                 String enteredTask= binding1.enterTaskET.getText().toString();
                 //get id from signup through intent
-                String ID = UserSession.getInstance().getUserID();
+
+
+
                 String status= "pending";
 
                 TaskCounter.getInstance().addTaskToPending();
@@ -163,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 }
                 //save task with user id
 //                Toast.makeText(this, "id:"+ID, Toast.LENGTH_SHORT).show();
+                ModelUser modelUser = sharedPref.getData();
+                String ID= modelUser.getEmail();
                 if (ID!=null)
                 {
                     long currentTimeMillis= System.currentTimeMillis();

@@ -36,7 +36,6 @@ public class TaskFragment extends Fragment {
     List<ModelTask> taskList;
     RecyclerView recyclerView;
     SharedPref sharedPref;
-    String userId = UserSession.getInstance().getUserID();
     View previousSelectedCard = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,7 +120,8 @@ public class TaskFragment extends Fragment {
     private void fetchTask(String category) {
         FirebaseFirestore db;
         db = FirebaseFirestore.getInstance();
-
+        ModelUser user = sharedPref.getData();
+       String userId= user.getEmail();
         //fetching tasks from firebase
        Query taskQuery= db.collection("Task")
                 .whereEqualTo("userID",userId)
