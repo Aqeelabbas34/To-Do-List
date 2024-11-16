@@ -1,4 +1,4 @@
-package com.aqeel.to_do_list;
+package com.aqeel.to_do_list.UI;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -25,7 +25,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.aqeel.to_do_list.DataClasses.AdapterTask;
+import com.aqeel.to_do_list.MVVM.MyViewModel;
+import com.aqeel.to_do_list.fragments.Calender_fragment;
+import com.aqeel.to_do_list.DataClasses.ModelTask;
+import com.aqeel.to_do_list.DataClasses.ModelUser;
+import com.aqeel.to_do_list.fragments.Person_fragment;
+import com.aqeel.to_do_list.R;
+import com.aqeel.to_do_list.DataClasses.SharedPref;
+import com.aqeel.to_do_list.singelton.TaskCounter;
+import com.aqeel.to_do_list.fragments.TaskFragment;
 import com.aqeel.to_do_list.databinding.ActivityMainBinding;
 import com.aqeel.to_do_list.databinding.CustomDialogeBinding;
 import com.google.android.material.bottomappbar.BottomAppBar;
@@ -52,15 +63,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     String selectedTime;
     String selectedDueDate;
     SharedPref sharedPref;
+    MyViewModel myViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView (binding.getRoot());
         //Innitialize Firebase
         db= FirebaseFirestore.getInstance();
+        myViewModel= new ViewModelProvider(this).get(MyViewModel.class);
         sharedPref = new SharedPref(this);
         ModelUser user = new ModelUser();
         selectedCategory="All";
@@ -131,16 +144,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
         FloatingActionButton addBtn = findViewById(R.id.add_btn);
+
         addBtn.setOnClickListener(view -> {
             BottomSheetDialog dialog = new BottomSheetDialog(this);
             View dialogeView = LayoutInflater.from(this).inflate(R.layout.custom_dialoge, null);
             CustomDialogeBinding binding1;
             binding1 = CustomDialogeBinding.inflate(getLayoutInflater());
 
-            //save task to firebase
+
             binding1.saveBtnId.setOnClickListener(view12 -> {
                 String enteredTask= binding1.enterTaskET.getText().toString();
-                //get id from signup through intent
+
 
 
 
@@ -163,15 +177,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     int minute = calendar.get(Calendar.MINUTE);
                     selectedTime = String.format("%02d:%02d", hour, minute);
                 }
-                //save task with user id
-//                Toast.makeText(this, "id:"+ID, Toast.LENGTH_SHORT).show();
+
                 ModelUser modelUser = sharedPref.getData();
                 String ID= modelUser.getEmail();
                 if (ID!=null)
                 {
+                    myViewModel.getMessage().observe(this,message->{
+                        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+                    });
                     long currentTimeMillis= System.currentTimeMillis();
                     ModelTask modelTask= new ModelTask(enteredTask,ID,currentTimeMillis,status,selectedCategory,selectedDueDate,selectedTime);
-                    db.collection("Task")
+                     myViewModel.addTask(modelTask);
+                   /* db.collection("Task")
                             .add(modelTask)
                             .addOnSuccessListener(documentReference -> {
                                 modelTaskList= new ArrayList<>();
@@ -180,14 +197,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                                 adapterTask.addTask(modelTask);
                                 adapterTask.notifyItemInserted(modelTaskList.size()-1);
 
-                              /* Bundle result = new Bundle();
+                              *//* Bundle result = new Bundle();
                                result.putBoolean("taskAdd",true);
-                               getSupportFragmentManager().setFragmentResult("requestKey",result);*/
+                               getSupportFragmentManager().setFragmentResult("requestKey",result);*//*
                                 Toast.makeText(MainActivity.this,"Task saved",Toast.LENGTH_SHORT).show();
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(MainActivity.this,"Failed to save task",Toast.LENGTH_SHORT).show();
-                            });
+                            });*/
                     binding1.enterTaskET.setText("");
                     selectedCategory="All";
                     selectedDueDate= null;

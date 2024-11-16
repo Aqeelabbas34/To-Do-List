@@ -1,4 +1,4 @@
-package com.aqeel.to_do_list;
+package com.aqeel.to_do_list.DataClasses;
 
 import android.content.Context;
 import android.content.SharedPreferences;

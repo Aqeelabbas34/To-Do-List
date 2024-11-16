@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.8.8")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation (libs.mpandroidchart)
     implementation ("com.google.android.gms:play-services-base:18.5.0")
     implementation ("com.google.firebase:firebase-auth:23.0.0")

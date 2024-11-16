@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/fragmentTask"
    android:layout_marginBottom="50dp"
-    tools:context=".TaskFragment">
+    tools:context=".fragments.TaskFragment">
 
     <RelativeLayout
 

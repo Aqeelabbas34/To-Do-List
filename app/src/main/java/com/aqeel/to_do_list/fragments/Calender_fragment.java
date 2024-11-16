@@ -1,11 +1,10 @@
-package com.aqeel.to_do_list;
+package com.aqeel.to_do_list.fragments;
 
-import android.icu.util.Calendar;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,12 +14,14 @@ import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.Toast;
 
-import com.google.firebase.Firebase;
-import com.google.firebase.firestore.EventListener;
+import com.aqeel.to_do_list.DataClasses.AdapterTask;
+import com.aqeel.to_do_list.DataClasses.ModelTask;
+import com.aqeel.to_do_list.DataClasses.ModelUser;
+import com.aqeel.to_do_list.MVVM.MyViewModel;
+import com.aqeel.to_do_list.R;
+import com.aqeel.to_do_list.DataClasses.SharedPref;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class Calender_fragment extends Fragment {
     List<ModelTask> taskList = new ArrayList<>();
     FirebaseFirestore db;
     SharedPref sharedPref;
+    MyViewModel myViewModel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class Calender_fragment extends Fragment {
         recyclerView = view.findViewById(R.id.task_recyclerView);
         calendar= view.findViewById(R.id.calender_id);
         db= FirebaseFirestore.getInstance();
+        myViewModel= new ViewModelProvider(requireActivity()).get(MyViewModel.class);
         sharedPref = new SharedPref(requireContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapterTask=new AdapterTask(getContext(),taskList);
@@ -52,7 +55,14 @@ public class Calender_fragment extends Fragment {
                 Toast.makeText(requireActivity(),selectedDate,Toast.LENGTH_SHORT).show();
                 ModelUser user = sharedPref.getData();
                 String userId= user.getEmail();
-            db.collection("Task")
+                myViewModel.fetchTaskOnDate(selectedDate,userId);
+                myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
+                    if (isAdded()){
+                        adapterTask.updateList(task);
+                    }
+                });
+
+          /*  db.collection("Task")
                     .whereEqualTo("userID",userId)
                     .whereEqualTo("dueDate",selectedDate)
                     .whereEqualTo("status","pending")
@@ -83,7 +93,7 @@ public class Calender_fragment extends Fragment {
                           else {
                               Toast.makeText(requireActivity(),"Task Not found",Toast.LENGTH_SHORT).show();
                           }
-                    });
+                    });*/
             }
         });
         return  view;

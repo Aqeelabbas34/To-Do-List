@@ -1,4 +1,4 @@
-package com.aqeel.to_do_list;
+package com.aqeel.to_do_list.DataClasses;
 
 public class ModelUser {
     String name,email,password;
@@ -6,10 +6,10 @@ public class ModelUser {
 
 
 
-    ModelUser(){
+    public ModelUser(){
 
     }
-    ModelUser(String Name, String Email,String pass){
+ public    ModelUser(String Name, String Email,String pass){
         this.name=Name;
         this.email=Email;
 

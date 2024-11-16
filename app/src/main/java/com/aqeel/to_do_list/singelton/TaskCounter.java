@@ -1,6 +1,4 @@
-package com.aqeel.to_do_list;
-
-import java.util.Arrays;
+package com.aqeel.to_do_list.singelton;
 
 public class TaskCounter {
     private static final TaskCounter instance = new TaskCounter();

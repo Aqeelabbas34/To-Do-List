@@ -1,13 +1,13 @@
-package com.aqeel.to_do_list;
+package com.aqeel.to_do_list.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.aqeel.to_do_list.R;
+import com.aqeel.to_do_list.DataClasses.SharedPref;
 
 public class SplashScreen extends AppCompatActivity {
    SharedPref sharedPref;
@@ -19,11 +19,11 @@ public class SplashScreen extends AppCompatActivity {
         sharedPref= new SharedPref(this);
 
          if (sharedPref.isLoggedIn()){
-             startActivity(new Intent(SplashScreen.this,MainActivity.class));
+             startActivity(new Intent(SplashScreen.this, MainActivity.class));
              finish();
          }
          else {
-             startActivity(new Intent(SplashScreen.this,LoginActivity.class));
+             startActivity(new Intent(SplashScreen.this, LoginActivity.class));
              finish();
          }
     }

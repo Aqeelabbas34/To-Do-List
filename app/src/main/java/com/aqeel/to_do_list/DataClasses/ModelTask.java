@@ -1,4 +1,4 @@
-package com.aqeel.to_do_list;
+package com.aqeel.to_do_list.DataClasses;
 
 public class ModelTask {
 

@@ -1,6 +1,5 @@
-package com.aqeel.to_do_list;
+package com.aqeel.to_do_list.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.aqeel.to_do_list.DataClasses.ModelUser;
+import com.aqeel.to_do_list.R;
+import com.aqeel.to_do_list.DataClasses.SharedPref;
+import com.aqeel.to_do_list.singelton.TaskCounter;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -20,7 +23,6 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * A simple {@link Fragment} subclass.

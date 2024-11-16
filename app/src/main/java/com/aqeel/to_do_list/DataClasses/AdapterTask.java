@@ -1,4 +1,4 @@
-package com.aqeel.to_do_list;
+package com.aqeel.to_do_list.DataClasses;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,17 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.aqeel.to_do_list.R;
+import com.aqeel.to_do_list.singelton.TaskCounter;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
