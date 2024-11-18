@@ -66,6 +66,10 @@ public class MyViewModel extends ViewModel {
             }
         });
     }
+    public void markComplete(ModelTask modelTask){
+        _taskLiveData=repository.markComplete(modelTask);
+
+    }
 
     public MutableLiveData<String> getMessage() {
         return _message;

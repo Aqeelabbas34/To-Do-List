@@ -5,12 +5,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aqeel.to_do_list.MVVM.MyViewModel;
 import com.aqeel.to_do_list.R;
 import com.aqeel.to_do_list.singelton.TaskCounter;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,13 +25,17 @@ import java.util.Locale;
 
 public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder> {
     private Context context;
-    private  List<ModelTask>  modelTaskList ;
+    private final List<ModelTask>  modelTaskList ;
+    private OnItemClickedListener itemClickedListener;
 
-
-
-    public AdapterTask( Context context,List<ModelTask> taskList) {
+    public AdapterTask(Context context, List<ModelTask> taskList, OnItemClickedListener clickedListener) {
         this.context=context;
         this.modelTaskList=taskList;
+        this.itemClickedListener=clickedListener;
+    }
+    public  interface OnItemClickedListener{
+        void onTaskChecked(ModelTask modelTask,Boolean isChecked);
+        void onItemClicked(ModelTask task);
     }
   // inflate layout with item
     @NonNull
@@ -47,19 +54,18 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
       holder.taskTV.setText(currentTask.taskName);
       holder.taskChecked.setOnCheckedChangeListener(null);
 
-      holder.timeStampTV.setText(formatTimestamp(currentTask.getTimeStamp()));
+      holder.timeStampTV.setText(currentTask.time);
         holder.taskChecked.setChecked(currentTask.getStatus().equals("complete"));
       holder.taskChecked.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-       if (isChecked){
 
-           TaskCounter.getInstance().completeTask();
-//           holder.itemView.setVisibility(View.INVISIBLE);
-           if (position!=RecyclerView.NO_POSITION){
-           markComplete(currentTask,position);
-           updateList(modelTaskList);
-           }
-
-       }
+          if (itemClickedListener != null){
+          itemClickedListener.onTaskChecked(currentTask,isChecked);
+      }
+     holder.itemView.setOnClickListener(view -> {
+         if (itemClickedListener!=null){
+             itemClickedListener.onItemClicked(currentTask);
+         }
+     });
       });
 
 
@@ -93,11 +99,8 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
         this.modelTaskList.addAll(newTask);
         this.notifyDataSetChanged();
     }
-   public void addTask(ModelTask task) {
-       this.modelTaskList.add(task); // Add the new task to the list
-       notifyItemInserted(modelTaskList.size() - 1); // Notify the adapter about the new task
-   }
-    private void markComplete(ModelTask task , int position){
+ 
+   /* private void markComplete(ModelTask task , int position){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Task")
                 .document(task.getTasKID())
@@ -113,6 +116,6 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
                     }
 
                 }).addOnFailureListener(e -> Log.w("AdapterTask","Error deleting task",e));
-    }
+    }*/
 
 }

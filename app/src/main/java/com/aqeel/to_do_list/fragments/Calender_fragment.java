@@ -58,7 +58,7 @@ public class Calender_fragment extends Fragment {
                 myViewModel.fetchTaskOnDate(selectedDate,userId);
                 myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
                     if (isAdded()){
-                        adapterTask.updateList(task);
+                        adapterTask.updateList(task );
                     }
                 });
 

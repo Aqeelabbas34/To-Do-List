@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-public class TaskFragment extends Fragment {
+public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedListener {
 
     FragmentTaskBinding binding;
     AdapterTask taskAdapter;
@@ -64,7 +64,7 @@ public class TaskFragment extends Fragment {
             }
         });
         binding.taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        AdapterTask adapterTask= new AdapterTask(requireActivity(),taskList);
+        AdapterTask adapterTask= new AdapterTask(requireActivity(),taskList,this);
         binding.taskRecyclerView.setAdapter(adapterTask);
         myViewModel.fetchUserTask("All",userId);
         myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
@@ -120,7 +120,7 @@ public class TaskFragment extends Fragment {
     }
     private void updateTaskList(List<ModelTask> filteredList) {
         if (taskAdapter == null) {
-            taskAdapter = new AdapterTask(requireContext(), filteredList);
+            taskAdapter = new AdapterTask(requireContext(), filteredList,this);
             binding.taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             binding.taskRecyclerView.setAdapter(taskAdapter);
         } else {
@@ -167,4 +167,16 @@ public class TaskFragment extends Fragment {
 
     }
 
+    @Override
+    public void onTaskChecked(ModelTask modelTask, Boolean isChecked) {
+        if (isChecked){
+            modelTask.setStatus("complete");
+            myViewModel.markComplete(modelTask);
+        }
+    }
+
+    @Override
+    public void onItemClicked(ModelTask task) {
+    
+    }
 }

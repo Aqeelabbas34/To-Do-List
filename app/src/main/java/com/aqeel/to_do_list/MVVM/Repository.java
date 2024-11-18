@@ -1,16 +1,11 @@
 package com.aqeel.to_do_list.MVVM;
 
-import android.content.Intent;
-import android.widget.Toast;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.aqeel.to_do_list.DataClasses.AdapterTask;
 import com.aqeel.to_do_list.DataClasses.ModelTask;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
-import com.aqeel.to_do_list.UI.LoginActivity;
-import com.aqeel.to_do_list.UI.MainActivity;
-import com.aqeel.to_do_list.singelton.UserSession;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -18,7 +13,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Repository {
 
@@ -153,6 +147,23 @@ public class Repository {
         });
         return taskLiveData;
     }
+    public MutableLiveData<List<ModelTask>>  markComplete(ModelTask task){
+        List<ModelTask> taskList = new ArrayList<>();
+        db.collection("Task")
+                .document(task.getTasKID())
+                .update("status","complete")
+                .addOnSuccessListener(unused -> {
+
+                        task.setStatus("pending");
+                        taskList.remove(task);
+
+                        taskLiveData.postValue(taskList);
+                })
+
+        .addOnFailureListener(e -> Log.w("AdapterTask","Error deleting task" ));
+        return taskLiveData;
+    }
+
 
     public interface Callback {
         void onSuccess(String message);
