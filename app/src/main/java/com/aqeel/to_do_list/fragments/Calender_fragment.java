@@ -1,9 +1,11 @@
 package com.aqeel.to_do_list.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import com.aqeel.to_do_list.DataClasses.ModelUser;
 import com.aqeel.to_do_list.MVVM.MyViewModel;
 import com.aqeel.to_do_list.R;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
+import com.aqeel.to_do_list.UI.taskDetails;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -27,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Calender_fragment extends Fragment {
+public class Calender_fragment extends Fragment implements AdapterTask.OnItemClickedListener {
     CalendarView calendar;
     RecyclerView recyclerView;
     AdapterTask adapterTask;
@@ -46,7 +49,7 @@ public class Calender_fragment extends Fragment {
         myViewModel= new ViewModelProvider(requireActivity()).get(MyViewModel.class);
         sharedPref = new SharedPref(requireContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapterTask=new AdapterTask(getContext(),taskList);
+        adapterTask=new AdapterTask(getContext(),taskList,this);
         recyclerView.setAdapter(adapterTask);
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -62,40 +65,30 @@ public class Calender_fragment extends Fragment {
                     }
                 });
 
-          /*  db.collection("Task")
-                    .whereEqualTo("userID",userId)
-                    .whereEqualTo("dueDate",selectedDate)
-                    .whereEqualTo("status","pending")
-                    .addSnapshotListener((querySnapshot, error) -> {
-                       if (isAdded()){
-                           if (error!= null){
-                               Toast.makeText(requireActivity(),"Failed to get Task",Toast.LENGTH_LONG).show();
-                           }
-                       }
-                        taskList.clear();
 
-                          if (querySnapshot!= null && !querySnapshot.isEmpty()) {
-                              for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
-                                  String taskID= documentSnapshot.getId();
-                                  ModelTask userTask = documentSnapshot.toObject(ModelTask.class);
-                                  userTask.setTasKID(taskID);
-                                  taskList.add(userTask);
-                              }
-
-                             if (isAdded()){
-                                 adapterTask = new AdapterTask(requireActivity(), taskList);
-                                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                                 recyclerView.setAdapter(adapterTask);
-                             }
-
-
-                        }
-                          else {
-                              Toast.makeText(requireActivity(),"Task Not found",Toast.LENGTH_SHORT).show();
-                          }
-                    });*/
             }
         });
         return  view;
+    }
+
+    @Override
+    public void onTaskChecked(ModelTask modelTask, Boolean isChecked) {
+        if (isChecked){
+            modelTask.setStatus("complete");
+            myViewModel.markComplete(modelTask);
+        }
+    }
+
+    @Override
+    public void onItemClicked(ModelTask modelTask) {
+        Intent intent = new Intent(requireActivity(), taskDetails.class);
+        intent.putExtra("task",modelTask);
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 }

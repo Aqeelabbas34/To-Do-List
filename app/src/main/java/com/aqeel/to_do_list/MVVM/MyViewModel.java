@@ -22,6 +22,9 @@ public class MyViewModel extends ViewModel {
         this.repository = new Repository();
 
     }
+    public void deleteTask(ModelTask modelTask){
+       _taskLiveData= repository.deleteTask(modelTask);
+    }
     public void addTask(ModelTask modelTask){
         repository.addTask(modelTask, new Repository.Callback() {
             @Override
@@ -67,7 +70,7 @@ public class MyViewModel extends ViewModel {
         });
     }
     public void markComplete(ModelTask modelTask){
-        _taskLiveData=repository.markComplete(modelTask);
+        repository.markComplete(modelTask);
 
     }
 

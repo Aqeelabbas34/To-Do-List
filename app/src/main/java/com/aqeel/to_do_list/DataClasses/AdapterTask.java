@@ -26,7 +26,7 @@ import java.util.Locale;
 public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder> {
     private Context context;
     private final List<ModelTask>  modelTaskList ;
-    private OnItemClickedListener itemClickedListener;
+    private final OnItemClickedListener itemClickedListener;
 
     public AdapterTask(Context context, List<ModelTask> taskList, OnItemClickedListener clickedListener) {
         this.context=context;
@@ -54,20 +54,21 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
       holder.taskTV.setText(currentTask.taskName);
       holder.taskChecked.setOnCheckedChangeListener(null);
 
-      holder.timeStampTV.setText(currentTask.time);
+      holder.timeStampTV.setText(formatTimestamp(currentTask.getTimeStamp()));
         holder.taskChecked.setChecked(currentTask.getStatus().equals("complete"));
       holder.taskChecked.setOnCheckedChangeListener((compoundButton, isChecked) -> {
 
           if (itemClickedListener != null){
           itemClickedListener.onTaskChecked(currentTask,isChecked);
       }
-     holder.itemView.setOnClickListener(view -> {
-         if (itemClickedListener!=null){
-             itemClickedListener.onItemClicked(currentTask);
-         }
-     });
-      });
 
+      });
+        holder.itemView.setOnClickListener(view -> {
+            Log.d("AdapterTask", "Item bind: " + currentTask.getTaskName());
+            if (itemClickedListener!=null){
+                itemClickedListener.onItemClicked(currentTask);
+            }
+        });
 
     }
   // gets the size of list

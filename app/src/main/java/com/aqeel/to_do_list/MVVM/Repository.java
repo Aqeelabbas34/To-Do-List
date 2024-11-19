@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.aqeel.to_do_list.DataClasses.ModelTask;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -93,7 +94,7 @@ public class Repository {
                 for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
                     String taskID = documentSnapshot.getId();
                     ModelTask userTask = documentSnapshot.toObject(ModelTask.class);
-                    userTask.setTasKID(taskID);
+                    userTask.setTaskID(taskID);
 
                     taskList.add(userTask);
 
@@ -110,12 +111,24 @@ public class Repository {
         db.collection("Task")
                 .add(modelTask)
                 .addOnSuccessListener(documentReference -> {
-                  callback.onSuccess("Task added");
+                    // Set the document ID as taskId
+                    modelTask.setTaskID(documentReference.getId());
+
+
+                    documentReference.update("taskID", modelTask.getTaskID())
+                            .addOnSuccessListener(aVoid -> {
+                                callback.onSuccess("Task added  " );
+                            })
+                            .addOnFailureListener(e -> {
+                                callback.onFailure("Failed to update task ID");
+                            });
+
+
 
 
                 })
                 .addOnFailureListener(e -> {
-                    callback.onFailure("Failed to add");
+                    callback.onFailure("Failed to add task");
                 });
     }
     public MutableLiveData<List<ModelTask>> fetchTaskOnDate (String date, String ID, Callback callback){
@@ -134,7 +147,7 @@ public class Repository {
                 for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
                     String taskID = documentSnapshot.getId();
                     ModelTask userTask = documentSnapshot.toObject(ModelTask.class);
-                    userTask.setTasKID(taskID);
+                    userTask.setTaskID(taskID);
 
                     taskList.add(userTask);
 
@@ -148,14 +161,13 @@ public class Repository {
         return taskLiveData;
     }
     public MutableLiveData<List<ModelTask>>  markComplete(ModelTask task){
-        List<ModelTask> taskList = new ArrayList<>();
+        List<ModelTask> taskList = taskLiveData.getValue();
         db.collection("Task")
-                .document(task.getTasKID())
+                .document(task.getTaskID())
                 .update("status","complete")
                 .addOnSuccessListener(unused -> {
-
-                        task.setStatus("pending");
-                        taskList.remove(task);
+                      task.setStatus("complete");
+//                        taskList.remove(task);
 
                         taskLiveData.postValue(taskList);
                 })
@@ -163,6 +175,41 @@ public class Repository {
         .addOnFailureListener(e -> Log.w("AdapterTask","Error deleting task" ));
         return taskLiveData;
     }
+    public MutableLiveData<List<ModelTask>>  deleteTask(ModelTask task){
+        List<ModelTask> taskList = taskLiveData.getValue();
+        db.collection("Task")
+
+                .whereEqualTo("taskID",task.getTaskID())
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+
+                        for (DocumentSnapshot document : queryDocumentSnapshots) {
+                            document.getReference().delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("DeleteTask", "Task deleted successfully");
+
+                                        taskList.remove(task);
+                                        taskLiveData.postValue(taskList);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("DeleteTask", "Error deleting task", e);
+                                        taskLiveData.postValue(taskList);
+                                    });
+                        }
+                    } else {
+                        Log.w("DeleteTask", "Task not found");
+                        taskLiveData.postValue(taskList);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("DeleteTask", "Error querying Firestore", e);
+                    taskLiveData.postValue(taskList);
+                });
+
+        return taskLiveData;
+    }
+
 
 
     public interface Callback {

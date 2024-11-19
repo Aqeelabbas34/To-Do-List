@@ -1,18 +1,20 @@
 package com.aqeel.to_do_list.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.aqeel.to_do_list.DataClasses.AdapterTask;
 import com.aqeel.to_do_list.DataClasses.ModelTask;
@@ -20,10 +22,12 @@ import com.aqeel.to_do_list.DataClasses.ModelUser;
 import com.aqeel.to_do_list.MVVM.MyViewModel;
 import com.aqeel.to_do_list.R;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
+import com.aqeel.to_do_list.UI.taskDetails;
 import com.aqeel.to_do_list.databinding.FragmentTaskBinding;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -34,10 +38,10 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
     List<ModelTask> taskList;
 
     SharedPref sharedPref;
-    View previousSelectedCard = null;
+
     MyViewModel myViewModel;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment for creating UI
         binding = FragmentTaskBinding.inflate(inflater, container, false);
@@ -127,20 +131,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
             taskAdapter.updateList(filteredList);
         }
     }
-    private void onCardClick(CardView selectedCard) {
-        // If there was a previously selected card, reset its background color
-        if (previousSelectedCard != null) {
-            previousSelectedCard.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey));
-        }
 
-        // Set the background color of the currently clicked card
-        selectedCard.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey));
-
-        // Update the previously selected card to the current one
-        previousSelectedCard = selectedCard;
-
-
-    }
 
     private void showSearchBar() {
         binding.textTaskId.setVisibility(View.GONE);
@@ -172,11 +163,22 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         if (isChecked){
             modelTask.setStatus("complete");
             myViewModel.markComplete(modelTask);
+
+            Log.d("AdapterTask", "Item checked: " + modelTask.getTaskName());
         }
     }
 
     @Override
-    public void onItemClicked(ModelTask task) {
-    
+    public void onItemClicked(ModelTask modelTask) {
+        Intent intent = new Intent(requireActivity(), taskDetails.class);
+        intent.putExtra("task",modelTask);
+        startActivity(intent);
+
+    }
+
+    @Override
+    public void onPause() {
+        Log.e("Activity","Paused");
+        super.onPause();
     }
 }

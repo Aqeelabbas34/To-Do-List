@@ -1,11 +1,14 @@
 package com.aqeel.to_do_list.DataClasses;
 
-public class ModelTask {
+import java.io.Serializable;
+
+public class ModelTask implements Serializable {
 
      String taskName;
-     String tasKID;
+     String taskID;
      String userID;
      long timeStamp;
+     Boolean starFlag;
      String DueDate;
      String time;
      String category;
@@ -78,12 +81,12 @@ public class ModelTask {
         this.timeStamp = timeStamp;
     }
 
-    public String getTasKID() {
-        return tasKID;
+    public String getTaskID() {
+        return taskID;
     }
 
-    public void setTasKID(String tasKID) {
-        this.tasKID = tasKID;
+    public void setTaskID(String tasKID) {
+        this.taskID = tasKID;
     }
 
 }

@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     ActionBarDrawerToggle actionBarDrawerToggle;
     BottomAppBar bottomAppBar;
     ActivityMainBinding binding;
-    FirebaseFirestore db;
-    List<ModelTask> modelTaskList;
-    AdapterTask adapterTask;
+
+
+
     String selectedCategory;
     String selectedTime;
     String selectedDueDate;
@@ -71,22 +71,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         EdgeToEdge.enable(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView (binding.getRoot());
-        //Innitialize Firebase
-        db= FirebaseFirestore.getInstance();
+
         myViewModel= new ViewModelProvider(this).get(MyViewModel.class);
         sharedPref = new SharedPref(this);
         ModelUser user = new ModelUser();
         selectedCategory="All";
-       /* Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR,1);
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        selectedDueDate = String.format("%04d-%02d-%02d", year, month, day);
-        calendar.add(Calendar.HOUR_OF_DAY,24);
-        int hour= calendar.get(Calendar.HOUR_OF_DAY);
-        int minute= calendar.get(Calendar.MINUTE);
-        selectedTime = String.format("%02d:%02d", hour, minute);*/
+
         bottomAppBar = findViewById(R.id.bottom_app_bar);
 
         setSupportActionBar(bottomAppBar);
@@ -103,14 +93,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 .replace(R.id.content_frame, new TaskFragment())
                 .commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        /*bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
 
-            if (item.getItemId() == R.id.drawer_id) {
-                drawerLayout.openDrawer(GravityCompat.START);
-                return true;
-            }
-            return false;
-        });*/
         drawerNavigationView.setNavigationItemSelectedListener(item -> {
             if (R.id.logOutID==item.getItemId()){
                 logout();
@@ -188,23 +171,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     long currentTimeMillis= System.currentTimeMillis();
                     ModelTask modelTask= new ModelTask(enteredTask,ID,currentTimeMillis,status,selectedCategory,selectedDueDate,selectedTime);
                      myViewModel.addTask(modelTask);
-                   /* db.collection("Task")
-                            .add(modelTask)
-                            .addOnSuccessListener(documentReference -> {
-                                modelTaskList= new ArrayList<>();
-                                modelTaskList.add(modelTask);
-                                adapterTask= new AdapterTask(this,modelTaskList);
-                                adapterTask.addTask(modelTask);
-                                adapterTask.notifyItemInserted(modelTaskList.size()-1);
 
-                              *//* Bundle result = new Bundle();
-                               result.putBoolean("taskAdd",true);
-                               getSupportFragmentManager().setFragmentResult("requestKey",result);*//*
-                                Toast.makeText(MainActivity.this,"Task saved",Toast.LENGTH_SHORT).show();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(MainActivity.this,"Failed to save task",Toast.LENGTH_SHORT).show();
-                            });*/
                     binding1.enterTaskET.setText("");
                     selectedCategory="All";
                     selectedDueDate= null;
