@@ -97,9 +97,13 @@ public class Repository {
                     userTask.setTaskID(taskID);
 
                     taskList.add(userTask);
+                    Log.d("CategoryDebug", "number of tasks: " + taskList.size());
 
                 }
+                callback.onSuccess("task fetched");
             }else {
+                Log.d("CategoryDebug", "Selected Category no task found: " + category);
+
                 callback.onFailure("No task found");
             }
             taskLiveData.postValue(taskList);
@@ -160,7 +164,7 @@ public class Repository {
         });
         return taskLiveData;
     }
-    public MutableLiveData<List<ModelTask>>  markComplete(ModelTask task){
+    public void markComplete(ModelTask task){
         List<ModelTask> taskList = taskLiveData.getValue();
         db.collection("Task")
                 .document(task.getTaskID())
@@ -173,7 +177,6 @@ public class Repository {
                 })
 
         .addOnFailureListener(e -> Log.w("AdapterTask","Error deleting task" ));
-        return taskLiveData;
     }
     public MutableLiveData<List<ModelTask>>  deleteTask(ModelTask task){
         List<ModelTask> taskList = taskLiveData.getValue();
@@ -189,6 +192,7 @@ public class Repository {
                                     .addOnSuccessListener(aVoid -> {
                                         Log.d("DeleteTask", "Task deleted successfully");
 
+                                        assert taskList != null;
                                         taskList.remove(task);
                                         taskLiveData.postValue(taskList);
                                     })

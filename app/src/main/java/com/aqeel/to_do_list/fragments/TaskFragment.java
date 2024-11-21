@@ -73,35 +73,39 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         myViewModel.fetchUserTask("All",userId);
         myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
             if (isAdded()){
-                Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show();}
+                Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show();
+            Log.e("Message","Toast");}
         });
         myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
             if (isAdded() ){
                 adapterTask.updateList(task);
             }
         });
-        View.OnClickListener categoryClickListener = view1 -> {
-            String selectedCategory = "All"; // Default category
-            if (view.getId() == R.id.all_TV) {
-                selectedCategory = "All";
-            } else if (view.getId() == R.id.personal_TV) {
-                selectedCategory = "personal";
-            } else if (view.getId() == R.id.work_TV) {
-                selectedCategory = "Work";
-            } else if (view.getId() == R.id.wishList_TV) {
-                selectedCategory = "Wishlist";
-            } else if (view.getId() == R.id.birthday_TV) {
-                selectedCategory = "Birthday";
-            }
-            category.set(selectedCategory);
-            myViewModel.fetchUserTask(category.get(), userId);
-        };
 
-        binding.allTV.setOnClickListener(categoryClickListener);
-        binding.personalTV.setOnClickListener(categoryClickListener);
-        binding.workTV.setOnClickListener(categoryClickListener);
-        binding.wishListTV.setOnClickListener(categoryClickListener);
-        binding.birthdayTV.setOnClickListener(categoryClickListener);
+        binding.allTV.setOnClickListener(view1 -> {
+            myViewModel.fetchUserTask("All",userId);
+
+
+        });
+        binding.personalTV.setOnClickListener(view1 -> {
+
+            myViewModel.fetchUserTask("personal",userId);
+
+        });
+        binding.workTV.setOnClickListener(view1 -> {
+            myViewModel.fetchUserTask("Work",userId);
+
+        });
+        binding.wishListTV.setOnClickListener(view1 -> {
+
+            myViewModel.fetchUserTask("Wishlist",userId);
+
+        });
+        binding.birthdayTV.setOnClickListener(view1 -> {
+
+            myViewModel.fetchUserTask("Birthday",userId);
+
+        });
 
 
 
