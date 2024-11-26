@@ -12,6 +12,15 @@ public class ModelTask implements Serializable {
      String DueDate;
      String time;
      String category;
+     String dateCompleted;
+
+    public String getDateCompleted() {
+        return dateCompleted;
+    }
+
+    public void setDateCompleted(String dateCompleted) {
+        this.dateCompleted = dateCompleted;
+    }
 
     public String getCategory() {
         return category;

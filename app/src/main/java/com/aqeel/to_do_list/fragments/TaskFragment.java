@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -20,15 +18,15 @@ import com.aqeel.to_do_list.DataClasses.AdapterTask;
 import com.aqeel.to_do_list.DataClasses.ModelTask;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
 import com.aqeel.to_do_list.MVVM.MyViewModel;
-import com.aqeel.to_do_list.R;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
 import com.aqeel.to_do_list.UI.taskDetails;
 import com.aqeel.to_do_list.databinding.FragmentTaskBinding;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Locale;
 
 
 public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedListener {
@@ -49,12 +47,12 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         sharedPref = new SharedPref(requireContext());
         ModelUser user = sharedPref.getData();
         taskList = new ArrayList<>();
+
         String userId= user.getEmail();
         myViewModel= new ViewModelProvider(requireActivity()).get(MyViewModel.class);
         binding.searchIcon.setOnClickListener(view1 -> showSearchBar());
         binding.cancelIcon.setOnClickListener(View -> hideSearchBar());
 
-        AtomicReference<String> category = new AtomicReference<>("All");
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -82,30 +80,30 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
             }
         });
 
-        binding.allTV.setOnClickListener(view1 -> {
-            myViewModel.fetchUserTask("All",userId);
+        binding.allTV.setOnClickListener(view1 ->
+            myViewModel.fetchUserTask("All",userId)
 
 
-        });
-        binding.personalTV.setOnClickListener(view1 -> {
+        );
+        binding.personalTV.setOnClickListener(view1 ->
 
-            myViewModel.fetchUserTask("personal",userId);
+            myViewModel.fetchUserTask("personal",userId)
 
-        });
-        binding.workTV.setOnClickListener(view1 -> {
-            myViewModel.fetchUserTask("Work",userId);
+        );
+        binding.workTV.setOnClickListener(view1 ->
+            myViewModel.fetchUserTask("Work",userId)
 
-        });
-        binding.wishListTV.setOnClickListener(view1 -> {
+        );
+        binding.wishListTV.setOnClickListener(view1 ->
 
-            myViewModel.fetchUserTask("Wishlist",userId);
+            myViewModel.fetchUserTask("Wishlist",userId)
 
-        });
-        binding.birthdayTV.setOnClickListener(view1 -> {
+        );
+        binding.birthdayTV.setOnClickListener(view1 ->
 
-            myViewModel.fetchUserTask("Birthday",userId);
+            myViewModel.fetchUserTask("Birthday",userId)
 
-        });
+        );
 
 
 
@@ -164,6 +162,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
 
     @Override
     public void onTaskChecked(ModelTask modelTask, Boolean isChecked) {
+
         if (isChecked){
             modelTask.setStatus("complete");
             myViewModel.markComplete(modelTask);

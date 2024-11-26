@@ -1,8 +1,10 @@
 package com.aqeel.to_do_list.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,31 +12,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.anychart.AnyChart;
+import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.charts.Cartesian;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
+import com.aqeel.to_do_list.MVVM.MyViewModel;
 import com.aqeel.to_do_list.R;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
-import com.aqeel.to_do_list.singelton.TaskCounter;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Person_fragment#newInstance} factory method to
+ * Use the {@link Person_fragment} factory method to
  * create an instance of this fragment.
  */
 public class Person_fragment extends Fragment  {
 
    TextView pendingCount,completeCount,userName;
-   BarChart barChart;
    SharedPref sharedPref;
    FirebaseFirestore db ;
+   AnyChartView anyChartView;
+   MyViewModel myViewModel;
+   BarChart barChart;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,83 +52,156 @@ public class Person_fragment extends Fragment  {
         View view = inflater.inflate(R.layout.fragment_person, container, false);
         pendingCount= view.findViewById(R.id.pendingTaskCount);
         completeCount=view.findViewById(R.id.completeTaskCount);
-        barChart= view.findViewById(R.id.barChart);
         userName= view.findViewById(R.id.userNameText);
+         barChart=view.findViewById(R.id.barChart);
+
+        myViewModel=new ViewModelProvider(this).get(MyViewModel.class);
         sharedPref = new SharedPref(requireActivity());
         db= FirebaseFirestore.getInstance();
-
-
-      setChartData();
         ModelUser user = sharedPref.getData();
         String userId= user.getEmail();
-      getTaskCount(userId);
+//        createDummyBarChart();
+
+        if (userId!= null){
+            Log.d("user Id",userId);
+            myViewModel.fetchCompletedTasksForWeek(userId);
+        }
+        myViewModel.getCompletedTasksForWeek().observe(getViewLifecycleOwner(),count->{
+            if (count!=null){
+                 updateWeeklyBarChart(count);
+            }
+
+                }
+                );
+
+        getTaskCount(userId);
         return view;
     }
 
 
+    private void updateWeeklyBarChart(Map<String, Integer> taskCounts) {
+        // Log the taskCounts to ensure the map is being passed correctly
+        Log.d("BarChart", "Task counts: " + taskCounts);
 
-    void updateCount()
-    {
-        int pending= TaskCounter.getInstance().getPendingTaskCount();
-        int complete= TaskCounter.getInstance().getCompletedTaskCount();
-        pendingCount.setText(String.valueOf(pending));
-        completeCount.setText(String.valueOf(complete));
-    }
+        // Initialize the list to hold the BarEntry objects
+        List<BarEntry> entries = new ArrayList<>();
 
-    private void setChartData() {
-        // Define explicit values for each day of the week (for example)
-        ArrayList<BarEntry> entries = new ArrayList<>();
+        // Convert taskCounts to a sorted list of keys (days of the week)
+        List<String> sortedLabels = new ArrayList<>(taskCounts.keySet());
+        Collections.sort(sortedLabels);  // Sort the labels if necessary
 
-        // Manually define the BarEntries (each entry takes an x-value (day) and a y-value (task count))
-        entries.add(new BarEntry(0, 3)); // Sunday, 3 tasks
-        entries.add(new BarEntry(1, 5)); // Monday, 5 tasks
-        entries.add(new BarEntry(2, 2)); // Tuesday, 2 tasks
-        entries.add(new BarEntry(3, 7)); // Wednesday, 7 tasks
-        entries.add(new BarEntry(4, 4)); // Thursday, 4 tasks
-        entries.add(new BarEntry(5, 6)); // Friday, 6 tasks
-        entries.add(new BarEntry(6, 1)); // Saturday, 1 task
+        // Log the sorted labels
+        Log.d("BarChart", "Sorted Labels: " + sortedLabels);
 
-        // Create a BarDataSet from the entries
-        BarDataSet barDataSet = new BarDataSet(entries, "Daily Progress");
+        // Map the sorted labels to the BarEntries and add them to the entries list
+        int index = 0;
+        for (String label : sortedLabels) {
+            Integer value = taskCounts.get(label);
+            if (value != null) {
+                // Log each entry creation for debugging
+                Log.d("BarChart", "Adding BarEntry - Index: " + index + ", Value: " + value + ", Label: " + label);
+                entries.add(new BarEntry(index, value));  // Add entry for each label
+            } else {
+                // If no value is found for a label, log this case
+                Log.d("BarChart", "No value for label: " + label);
+            }
+            index++;
+        }
 
-        // Customize the appearance of the chart
-        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);  // Set color for the bars
-        barDataSet.setValueTextSize(10);  // Set value text size on bars
-        barDataSet.setBarShadowColor(ColorTemplate.getHoloBlue());  // Optional shadow color
+        // Log the entries to ensure they are created correctly
+        Log.d("BarChart", "Entries: " + entries);
 
-        // Set the data to the BarChart
+        // Create a BarDataSet
+        BarDataSet barDataSet = new BarDataSet(entries, "Completed Tasks");
+        barDataSet.setColor(Color.GREEN); // Set the color of the bars
+
+        // Create BarData and set it to the chart
         BarData barData = new BarData(barDataSet);
         barChart.setData(barData);
 
-        // Refresh the chart to show the updated data
+        // Log to check if data has been set to the chart
+        Log.d("BarChart", "Data set to chart");
+
+        // Customize chart appearance
+        barChart.setFitBars(true); // Make sure bars fit within the chart
+
+        // Set x-axis labels to the sorted labels
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(sortedLabels));
+
+        // Log to check if the x-axis formatter is set
+        Log.d("BarChart", "XAxis value formatter set");
+
+        // Refresh the chart
         barChart.invalidate();
 
-        // Set custom labels for X-axis (Days of the week)
-        String[] days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-        barChart.getXAxis().setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return days[(int) value];
-            }
-        });
-
-        // Set other chart properties
-        barChart.getDescription().setEnabled(false);  // Disable the description label
-        barChart.getLegend().setEnabled(false);  // Disable the legend
-        barChart.getXAxis().setDrawAxisLine(false);  // Optional, to hide the axis line
-        barChart.getXAxis().setDrawLabels(true);  // Optional, to show X-axis labels
-        barChart.getXAxis().setDrawGridLines(false);
-        barChart.getXAxis().setDrawGridLinesBehindData(false);
-        barChart.getXAxis().setDrawLimitLinesBehindData(false);
+        // Log to confirm the chart is invalidated and should refresh
+        Log.d("BarChart", "Chart invalidated and refreshed");
     }
+
+
+
+    private void createDummyBarChart() {
+        // Create dummy data for the bar chart
+        List<BarEntry> entries = new ArrayList<>();
+
+        // Add dummy data: BarEntry(index, value)
+        entries.add(new BarEntry(0, 5f));  // Monday
+        entries.add(new BarEntry(1, 10f)); // Tuesday
+        entries.add(new BarEntry(2, 7f));  // Wednesday
+        entries.add(new BarEntry(3, 3f));  // Thursday
+        entries.add(new BarEntry(4, 12f)); // Friday
+        entries.add(new BarEntry(5, 9f));  // Saturday
+        entries.add(new BarEntry(6, 6f));  // Sunday
+
+        // Create a dataset and assign it to the chart
+        BarDataSet barDataSet = new BarDataSet(entries, "Completed Tasks");
+        barDataSet.setColor(Color.GREEN); // Set color for bars
+
+        // Create BarData object
+        BarData barData = new BarData(barDataSet);
+
+        // Set the data to the chart
+        barChart.setData(barData);
+
+        // Set chart appearance
+        barChart.setFitBars(true); // Ensure bars fit the screen
+        barChart.invalidate(); // Refresh the chart
+
+        barChart.getXAxis().setDrawGridLines(false);   // Disable grid lines on X-axis
+        barChart.getAxisLeft().setDrawGridLines(false); // Disable grid lines on Y-axis
+        barChart.getAxisRight().setDrawGridLines(false); // Disable grid lines on right Y-axis (optional)
+
+        barChart.getXAxis().setDrawAxisLine(false);   // Remove the X-axis line
+        barChart.getAxisLeft().setDrawAxisLine(false); // Remove the left Y-axis line
+        barChart.getAxisRight().setDrawAxisLine(false); // Remove the ri
+
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(false);
+
+        // Set x-axis labels (days of the week)
+        List<String> labels = new ArrayList<>();
+        labels.add("Mon");
+        labels.add("Tue");
+        labels.add("Wed");
+        labels.add("Thu");
+        labels.add("Fri");
+        labels.add("Sat");
+        labels.add("Sun");
+
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+
+        // Log to confirm chart has been updated
+        Log.d("BarChart", "Dummy chart updated!");
+    }
+
 
     private void getTaskCount(String userID) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Query for all pending tasks for the specific user
+
         db.collection("Task")
-                .whereEqualTo("userID", userID) // Filter tasks by userID
-                .whereEqualTo("status", "pending") // Optional: Filter by pending status
+                .whereEqualTo("userID", userID)
+                .whereEqualTo("status", "pending")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -126,22 +209,21 @@ public class Person_fragment extends Fragment  {
                         int pending = task.getResult().size();
                         pendingCount.setText(String.valueOf(pending));
                     } else {
-                        Log.w("YourFragment", "Error getting tasks", task.getException());
+                        Log.w("count pending", "Error getting tasks", task.getException());
                     }
                 });
 
-        // Query for all completed tasks for the specific user
+
         db.collection("Task")
-                .whereEqualTo("userID", userID) // Filter tasks by userID
-                .whereEqualTo("status", "complete") // Filter by completed status
+                .whereEqualTo("userID", userID)
+                .whereEqualTo("status", "complete")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Count the number of documents retrieved (completed tasks)
                         int complete = task.getResult().size();
                         completeCount.setText(String.valueOf(complete));
                     } else {
-                        Log.w("YourFragment", "Error getting tasks", task.getException());
+                        Log.w("count complete", "Error getting tasks", task.getException());
                     }
                 });
     }

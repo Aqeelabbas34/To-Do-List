@@ -186,11 +186,12 @@
                            android:textStyle="bold"
                            android:textColor="#AAAAAA"/>
 
-                       <com.anychart.AnyChartView
-                           android:layout_width="match_parent"
-                           android:layout_height="match_parent"
-                           android:layout_below="@id/tv_id_progress"/>
-
+                      <com.github.mikephil.charting.charts.BarChart
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:layout_below="@id/tv_id_progress"
+                          android:id="@+id/barChart"
+                          />
 
                    </RelativeLayout>
                </androidx.cardview.widget.CardView>

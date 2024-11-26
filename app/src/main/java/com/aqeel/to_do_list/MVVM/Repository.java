@@ -6,14 +6,21 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.aqeel.to_do_list.DataClasses.ModelTask;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class Repository {
 
@@ -164,13 +171,74 @@ public class Repository {
         });
         return taskLiveData;
     }
+    public MutableLiveData<HashMap<String,Integer>> getCompletedTaskCountForWeek(String ID) {
+        MutableLiveData<HashMap<String,Integer>> completedTaskCount = new MutableLiveData<>();
+
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Start from Monday
+        Date startOfWeek = calendar.getTime();
+        calendar.add(Calendar.DATE, 6); // Get the end of the week (Sunday)
+        Date endOfWeek = calendar.getTime();
+
+        // Format dates to "yyyy-MM-dd"
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String startDate = sdf.format(startOfWeek);
+        String endDate = sdf.format(endOfWeek);
+
+        db.collection("tasks")
+                .whereEqualTo("userID", ID) // Filter by userID
+                .whereGreaterThanOrEqualTo("dateCompleted",startDate)
+                .whereLessThanOrEqualTo("dateCompleted", endDate)
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        Log.e("Firestore Error", "SnapshotListener failed", e);
+                        completedTaskCount.setValue(null); // Handle error state
+                        return;
+                    }
+
+                    if (queryDocumentSnapshots != null) {
+                        HashMap<String, Integer> taskCounts = new HashMap<>();
+                        Log.d("Firestore", "Number of tasks fetched: " + queryDocumentSnapshots.size());
+
+                        // Iterate over the documents and count completed tasks per date
+                        for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                            String taskDate = document.getString("date"); // Expected format: "yyyy-MM-dd"
+                            String completed = document.getString("complete"); // Check "complete" status
+
+                            Log.d("TaskRepo", "Task ID: " + document.getId() + " Task Date: " + taskDate + ", Completed: " + completed);
+
+                            if (completed != null && completed.equals("complete")) {
+                                if (taskDate != null) {
+                                    taskCounts.put(taskDate, taskCounts.getOrDefault(taskDate, 0) + 1);
+                                } else {
+                                    // Log or handle the case where taskDate is null
+                                    Log.w("TaskRepository", "Null taskDate encountered for task ID: " + document.getId());
+                                }
+                            }
+                        }
+
+                        Log.d("Task Count", "Completed Task Counts: " + taskCounts);
+                        completedTaskCount.postValue(taskCounts);
+                    } else {
+                        Log.w("Firestore", "No tasks found for the given query");
+                        completedTaskCount.postValue(null);
+                    }
+                });
+
+        return completedTaskCount;
+    }
     public void markComplete(ModelTask task){
         List<ModelTask> taskList = taskLiveData.getValue();
+        String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         db.collection("Task")
                 .document(task.getTaskID())
-                .update("status","complete")
+                .update("dateCompleted", todayDate,
+                        "status", "complete" )
                 .addOnSuccessListener(unused -> {
                       task.setStatus("complete");
+                      task.setDateCompleted(todayDate);
 //                        taskList.remove(task);
 
                         taskLiveData.postValue(taskList);
