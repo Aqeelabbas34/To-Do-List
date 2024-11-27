@@ -1,5 +1,6 @@
 package com.aqeel.to_do_list.UI;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
@@ -27,7 +28,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.aqeel.to_do_list.DataClasses.AdapterTask;
 import com.aqeel.to_do_list.MVVM.MyViewModel;
 import com.aqeel.to_do_list.fragments.Calender_fragment;
 import com.aqeel.to_do_list.DataClasses.ModelTask;
@@ -44,12 +44,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
@@ -74,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         myViewModel= new ViewModelProvider(this).get(MyViewModel.class);
         sharedPref = new SharedPref(this);
-        ModelUser user = new ModelUser();
         selectedCategory="All";
 
         bottomAppBar = findViewById(R.id.bottom_app_bar);
@@ -96,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         drawerNavigationView.setNavigationItemSelectedListener(item -> {
             if (R.id.logOutID==item.getItemId()){
-                logout();
+                showAlertDialog();
             }
             return false;
         });
@@ -165,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 String ID= modelUser.getEmail();
                 if (ID!=null)
                 {
-                    myViewModel.getMessage().observe(this,message->{
-                        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
-                    });
+                    myViewModel.getMessage().observe(this,message->
+                        Toast.makeText(this,message,Toast.LENGTH_SHORT).show()
+                    );
                     long currentTimeMillis= System.currentTimeMillis();
                     ModelTask modelTask= new ModelTask(enteredTask,ID,currentTimeMillis,status,selectedCategory,selectedDueDate,selectedTime);
                      myViewModel.addTask(modelTask);
@@ -185,10 +182,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             });
 
-            binding1.cardViewCategoryId.setOnClickListener(view1 -> {
-                chooseCategory();
+            binding1.cardViewCategoryId.setOnClickListener(view1 ->
+                chooseCategory()
 
-            });
+            );
             binding1.calenderDialogeId.setOnClickListener(view2 -> {
                 taskScheduling();
             });
@@ -200,9 +197,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     }
 
-    TaskFragment taskFragment = new TaskFragment();
-    Person_fragment personFragment = new Person_fragment();
-    Calender_fragment calenderFragment = new Calender_fragment();
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -242,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Dialog dialog= new Dialog(this);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.time_picker_dialoge, null);
         dialog.setContentView(dialogView);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Objects.requireNonNull(dialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.round_corner));
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.getWindow().setGravity(Gravity.CENTER);
@@ -393,5 +388,25 @@ private  void taskScheduling(){
 
     dialog1.setCancelable(true);
 }
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+
+        builder.setTitle("Warning");
+
+
+        builder.setMessage("Are you sure you want to Log Out");
+
+
+        builder.setPositiveButton("Yes", (dialog, which) -> logout());
+
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+           dialog.dismiss();
+        });
+
+
+        builder.show();
+    }
 
 }

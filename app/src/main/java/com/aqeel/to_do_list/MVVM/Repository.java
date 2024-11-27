@@ -6,13 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.aqeel.to_do_list.DataClasses.ModelTask;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class Repository {
 
@@ -174,7 +173,7 @@ public class Repository {
     public MutableLiveData<HashMap<String,Integer>> getCompletedTaskCountForWeek(String ID) {
         MutableLiveData<HashMap<String,Integer>> completedTaskCount = new MutableLiveData<>();
 
-
+        HashMap<String, Integer> taskCounts = new HashMap<>();
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Start from Monday
@@ -186,8 +185,17 @@ public class Repository {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         String startDate = sdf.format(startOfWeek);
         String endDate = sdf.format(endOfWeek);
+        Log.d("Query", "Start Date: " + startDate + ", End Date: " + endDate);
+        // Initialize taskCounts with the 7 days of the week
+        List<String> weekDays = new ArrayList<>();
+        calendar.setTime(startOfWeek);
+        for (int i = 0; i < 7; i++) {
+            weekDays.add(sdf.format(calendar.getTime()));
+            calendar.add(Calendar.DATE, 1);
+            taskCounts.put(weekDays.get(i), 0); // Initialize with 0 task count
+        }
 
-        db.collection("tasks")
+        db.collection("Task")
                 .whereEqualTo("userID", ID) // Filter by userID
                 .whereGreaterThanOrEqualTo("dateCompleted",startDate)
                 .whereLessThanOrEqualTo("dateCompleted", endDate)
@@ -199,32 +207,45 @@ public class Repository {
                     }
 
                     if (queryDocumentSnapshots != null) {
-                        HashMap<String, Integer> taskCounts = new HashMap<>();
+
                         Log.d("Firestore", "Number of tasks fetched: " + queryDocumentSnapshots.size());
 
                         // Iterate over the documents and count completed tasks per date
                         for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                            String taskDate = document.getString("date"); // Expected format: "yyyy-MM-dd"
-                            String completed = document.getString("complete"); // Check "complete" status
+                            String taskDate = document.getString("dateCompleted"); // Expected format: "yyyy-MM-dd"
+                            String completed = document.getString("status"); // Check "complete" status
 
                             Log.d("TaskRepo", "Task ID: " + document.getId() + " Task Date: " + taskDate + ", Completed: " + completed);
+                            if (taskDate == null || taskDate.isEmpty()) {
+                                Log.w("TaskRepository", "Null or empty dateCompleted for task ID: " + document.getId());
+                                continue;
+                            }
+                            if (completed != null && completed.equalsIgnoreCase("complete")) {
 
-                            if (completed != null && completed.equals("complete")) {
-                                if (taskDate != null) {
-                                    taskCounts.put(taskDate, taskCounts.getOrDefault(taskDate, 0) + 1);
-                                } else {
-                                    // Log or handle the case where taskDate is null
-                                    Log.w("TaskRepository", "Null taskDate encountered for task ID: " + document.getId());
+                                try {
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                    Date parsedDate = dateFormat.parse(taskDate);
+                                    SimpleDateFormat dayFormat = new SimpleDateFormat("EEE", Locale.getDefault()); // "Mon", "Tue", etc.
+                                    String dayName = dayFormat.format(parsedDate);
+
+                                    // Update task count for this day
+                                    taskCounts.put(dayName, taskCounts.getOrDefault(dayName, 0) + 1);
+                                    Log.d("TaskRepository", "Task Date: " + taskDate + " is mapped to Day Name: " + dayName + " Count: " + taskCounts.get(dayName));
+
+                                } catch (ParseException e1) {
+                                    Log.e("TaskRepository", "Error parsing taskDate: " + taskDate, e1);
                                 }
                             }
                         }
 
                         Log.d("Task Count", "Completed Task Counts: " + taskCounts);
                         completedTaskCount.postValue(taskCounts);
-                    } else {
-                        Log.w("Firestore", "No tasks found for the given query");
+                    }else {
+                        Log.d("Firestore", "No tasks found or error.");
                         completedTaskCount.postValue(null);
                     }
+
+
                 });
 
         return completedTaskCount;

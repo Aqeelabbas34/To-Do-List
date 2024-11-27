@@ -21,15 +21,23 @@ import com.aqeel.to_do_list.MVVM.MyViewModel;
 import com.aqeel.to_do_list.R;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -61,50 +69,51 @@ public class Person_fragment extends Fragment  {
         ModelUser user = sharedPref.getData();
         String userId= user.getEmail();
 //        createDummyBarChart();
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Start from Monday
+        Date startOfWeek = calendar.getTime();
         if (userId!= null){
             Log.d("user Id",userId);
             myViewModel.fetchCompletedTasksForWeek(userId);
         }
         myViewModel.getCompletedTasksForWeek().observe(getViewLifecycleOwner(),count->{
             if (count!=null){
-                 updateWeeklyBarChart(count);
+                Log.d("Task Count", "Received count: " + count);
+                 updateWeeklyBarChart(count,startOfWeek);
+                Log.d("return Livedata","taskWeekCount"+ count);
             }
 
-                }
-                );
+                });
 
         getTaskCount(userId);
         return view;
     }
 
 
-    private void updateWeeklyBarChart(Map<String, Integer> taskCounts) {
+    private void updateWeeklyBarChart(Map<String, Integer> taskCounts, Date startOfWeek) {
         // Log the taskCounts to ensure the map is being passed correctly
         Log.d("BarChart", "Task counts: " + taskCounts);
+
+        // Get the dynamically generated week days
+        List<String> weekDays = getWeekDays(startOfWeek);
+
+        // Log the weekDays list
+        Log.d("BarChart", "Week days: " + weekDays);
 
         // Initialize the list to hold the BarEntry objects
         List<BarEntry> entries = new ArrayList<>();
 
-        // Convert taskCounts to a sorted list of keys (days of the week)
-        List<String> sortedLabels = new ArrayList<>(taskCounts.keySet());
-        Collections.sort(sortedLabels);  // Sort the labels if necessary
-
-        // Log the sorted labels
-        Log.d("BarChart", "Sorted Labels: " + sortedLabels);
-
-        // Map the sorted labels to the BarEntries and add them to the entries list
+        // Map the week days to BarEntries and add them to the entries list
         int index = 0;
-        for (String label : sortedLabels) {
-            Integer value = taskCounts.get(label);
-            if (value != null) {
-                // Log each entry creation for debugging
-                Log.d("BarChart", "Adding BarEntry - Index: " + index + ", Value: " + value + ", Label: " + label);
-                entries.add(new BarEntry(index, value));  // Add entry for each label
-            } else {
-                // If no value is found for a label, log this case
-                Log.d("BarChart", "No value for label: " + label);
-            }
+        for (String day : weekDays) {
+            // Get the task count for this day (default to 0 if not found)
+            Integer value = taskCounts.getOrDefault(day, 0);
+
+            // Log each entry creation for debugging
+            Log.d("BarChart", "Adding BarEntry - Index: " + index + ", Value: " + value + ", Label: " + day);
+
+            // Add entry for each day, even if the value is 0 (this ensures every day is represented in the chart)
+            entries.add(new BarEntry(index, value));
             index++;
         }
 
@@ -113,7 +122,7 @@ public class Person_fragment extends Fragment  {
 
         // Create a BarDataSet
         BarDataSet barDataSet = new BarDataSet(entries, "Completed Tasks");
-        barDataSet.setColor(Color.GREEN); // Set the color of the bars
+        barDataSet.setColor(Color.GRAY); // Set the color of the bars
 
         // Create BarData and set it to the chart
         BarData barData = new BarData(barDataSet);
@@ -125,19 +134,71 @@ public class Person_fragment extends Fragment  {
         // Customize chart appearance
         barChart.setFitBars(true); // Make sure bars fit within the chart
 
-        // Set x-axis labels to the sorted labels
-        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(sortedLabels));
+        // Set x-axis labels to the weekDays
+        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(weekDays));
 
         // Log to check if the x-axis formatter is set
         Log.d("BarChart", "XAxis value formatter set");
 
         // Refresh the chart
         barChart.invalidate();
+        barChart.getXAxis().setDrawGridLines(false);   // Disable grid lines on X-axis
+        barChart.getAxisLeft().setDrawGridLines(false); // Disable grid lines on Y-axis
+        barChart.getAxisRight().setDrawGridLines(false); // Disable grid lines on right Y-axis (optional)
+
+        barChart.getXAxis().setDrawAxisLine(false);   // Remove the X-axis line
+        barChart.getAxisLeft().setDrawAxisLine(false); // Remove the left Y-axis line
+        barChart.getAxisRight().setDrawAxisLine(false); // Remove the ri
+
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(false);
+
+        barChart.setDrawValueAboveBar(true);
+        YAxis axis = barChart.getAxisRight();
+        axis.setEnabled(false);
+
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setEnabled(false);
+        DefaultValueFormatter defaultValueFormatter= new DefaultValueFormatter(0);
+       barData.setValueFormatter(defaultValueFormatter);
+       barDataSet.setValueTextSize(12f);
+        barData.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                if (value == 0) {
+                    return "";  // Return an empty string for bars with no data
+                } else {
+                    return String.valueOf((int)value); // Format other values as integers
+                }
+            }
+        });
+        XAxis xAxis =barChart.getXAxis();
+        xAxis.setGranularityEnabled(false);
+        barChart.getDescription().setEnabled(false);
+        barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+
 
         // Log to confirm the chart is invalidated and should refresh
         Log.d("BarChart", "Chart invalidated and refreshed");
     }
 
+
+    private List<String> getWeekDays(Date startOfWeek) {
+        List<String> weekDays = new ArrayList<>();
+
+        // Set up the calendar and format for the dates
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startOfWeek);
+
+        // Loop through 7 days (from Monday to Sunday)
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE", Locale.getDefault());
+        for (int i = 0; i < 7; i++) {
+            weekDays.add(sdf.format(calendar.getTime())); // Add formatted date to the list
+            calendar.add(Calendar.DATE, 1); // Move to the next day
+        }
+
+        return weekDays;
+    }
 
 
     private void createDummyBarChart() {

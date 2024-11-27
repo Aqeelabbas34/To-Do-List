@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.libs
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
@@ -38,12 +40,10 @@ android {
 }
 
 dependencies {
-    implementation("com.google.code.gson:gson:2.8.8")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
-    implementation ("com.github.AnyChart:AnyChart-Android:1.1.5")
-    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    implementation ("com.google.android.gms:play-services-base:18.5.0")
-    implementation ("com.google.firebase:firebase-auth:23.0.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation (libs.mpandroidchart)
+
     implementation (libs.recyclerview)
     implementation (libs.lottie)
     implementation(libs.appcompat)

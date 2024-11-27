@@ -1,5 +1,7 @@
 package com.aqeel.to_do_list.MVVM;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -16,14 +18,15 @@ public class MyViewModel extends ViewModel {
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
     private MutableLiveData<List<ModelTask>> _taskLiveData = new MutableLiveData<>();
     private MutableLiveData<HashMap<String,Integer>> _taskForWeek = new MutableLiveData<>();
-    private LiveData<HashMap<String, Integer>> completedTasksForWeek;
+
 
 
     public LiveData<HashMap<String, Integer>> getCompletedTasksForWeek() {
-        return completedTasksForWeek;
+        return _taskForWeek;
     }
     public void fetchCompletedTasksForWeek(String userID) {
         _taskForWeek = repository.getCompletedTaskCountForWeek(userID);
+
     }
 
     public LiveData<List<ModelTask>> getTaskLiveData(){
@@ -34,7 +37,7 @@ public class MyViewModel extends ViewModel {
     public MyViewModel() {
         this.repository = new Repository();
 
-        completedTasksForWeek=_taskForWeek;
+//        completedTasksForWeek=_taskForWeek;
 
     }
     public void deleteTask(ModelTask modelTask){

@@ -12,7 +12,7 @@
     <string name="nav_close">navigation close</string>
     <string name="enterTask">Enter New Task</string>
     <string name="chooseText">Choose Category</string>
-    <string name="starTask">Star Task</string>
+    <string name="completed">Completed Task</string>
     <string name="setting">Settings</string>
     <string name="Logout">Log Out</string>
 

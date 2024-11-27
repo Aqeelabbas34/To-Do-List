@@ -41,7 +41,7 @@
             app:fabAnchorMode="cradle"
             app:fabCradleMargin="10dp"
             app:fabCradleRoundedCornerRadius="50dp"
-            app:fabCradleVerticalOffset="10dp"
+            app:fabCradleVerticalOffset="5dp"
 
             >
 
@@ -51,7 +51,8 @@
                 android:id="@+id/bottom_nav_view"
                 android:background="@android:color/transparent"
                 app:itemActiveIndicatorStyle="@null"
-                app:labelVisibilityMode="unlabeled"
+                app:labelVisibilityMode="labeled"
+
                 app:menu="@menu/bottom_menue" />
 
         </com.google.android.material.bottomappbar.BottomAppBar>
