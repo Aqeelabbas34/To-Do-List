@@ -2,6 +2,7 @@ package com.aqeel.to_do_list.MVVM;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.aqeel.to_do_list.DataClasses.ModelTask;
@@ -170,6 +171,34 @@ public class Repository {
         });
         return taskLiveData;
     }
+    public MutableLiveData<List<ModelTask>> fetchCompletedTask ( String ID, Callback callback){
+        List<ModelTask> taskList = new ArrayList<>();
+        db.collection("Task")
+                .whereEqualTo("userID",ID)
+                .whereEqualTo("status","complete")
+                .addSnapshotListener((querySnapshot, error) -> {
+                    if (error != null) {
+                        callback.onFailure("snapshot error");
+                        return;
+                    }
+                    taskList.clear();
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                        for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
+                            String taskID = documentSnapshot.getId();
+                            ModelTask userTask = documentSnapshot.toObject(ModelTask.class);
+                            userTask.setTaskID(taskID);
+
+                            taskList.add(userTask);
+
+                        }
+                    }else {
+                        callback.onFailure("No task found");
+                    }
+                    taskLiveData.postValue(taskList);
+
+                });
+        return taskLiveData;
+    }
     public MutableLiveData<HashMap<String,Integer>> getCompletedTaskCountForWeek(String ID) {
         MutableLiveData<HashMap<String,Integer>> completedTaskCount = new MutableLiveData<>();
 
@@ -303,7 +332,42 @@ public class Repository {
         return taskLiveData;
     }
 
+    public MutableLiveData<Integer> getPendingCount(String ID){
+        MutableLiveData<Integer> taskCount = new MutableLiveData<>();
+        db.collection("Task")
+                .whereEqualTo("userID", ID)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
 
+                       int   pending = task.getResult().size();
+                       taskCount.postValue(pending);
+
+                    } else {
+                        Log.w("count pending", "Error getting tasks", task.getException());
+                    }
+                });
+        return taskCount;
+    }
+    public MutableLiveData<Integer> getCompletedCount(String ID){
+        MutableLiveData<Integer> taskCount = new MutableLiveData<>();
+        db.collection("Task")
+                .whereEqualTo("userID", ID)
+                .whereEqualTo("status", "complete")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+
+                        int   pending = task.getResult().size();
+                        taskCount.postValue(pending);
+
+                    } else {
+                        Log.w("count pending", "Error getting tasks", task.getException());
+                    }
+                });
+        return taskCount;
+    }
 
     public interface Callback {
         void onSuccess(String message);

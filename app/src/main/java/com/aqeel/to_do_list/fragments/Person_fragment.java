@@ -2,24 +2,19 @@ package com.aqeel.to_do_list.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Cartesian;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.aqeel.to_do_list.DataClasses.ModelUser;
+import com.aqeel.to_do_list.DataClasses.SharedPref;
 import com.aqeel.to_do_list.MVVM.MyViewModel;
 import com.aqeel.to_do_list.R;
-import com.aqeel.to_do_list.DataClasses.SharedPref;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -34,7 +29,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -45,45 +39,52 @@ import java.util.Map;
  * Use the {@link Person_fragment} factory method to
  * create an instance of this fragment.
  */
-public class Person_fragment extends Fragment  {
+public class Person_fragment extends Fragment {
 
-   TextView pendingCount,completeCount,userName;
-   SharedPref sharedPref;
-   FirebaseFirestore db ;
-   AnyChartView anyChartView;
-   MyViewModel myViewModel;
-   BarChart barChart;
+    TextView pendingCount, completeCount, userName;
+    SharedPref sharedPref;
+    FirebaseFirestore db;
+
+    MyViewModel myViewModel;
+    BarChart barChart;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_person, container, false);
-        pendingCount= view.findViewById(R.id.pendingTaskCount);
-        completeCount=view.findViewById(R.id.completeTaskCount);
-        userName= view.findViewById(R.id.userNameText);
-         barChart=view.findViewById(R.id.barChart);
+        pendingCount = view.findViewById(R.id.pendingTaskCount);
+        completeCount = view.findViewById(R.id.completeTaskCount);
+        userName = view.findViewById(R.id.userNameText);
+        barChart = view.findViewById(R.id.barChart);
 
-        myViewModel=new ViewModelProvider(this).get(MyViewModel.class);
+        myViewModel = new ViewModelProvider(this).get(MyViewModel.class);
         sharedPref = new SharedPref(requireActivity());
-        db= FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         ModelUser user = sharedPref.getData();
-        String userId= user.getEmail();
+        String userId = user.getEmail();
 //        createDummyBarChart();
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Start from Monday
         Date startOfWeek = calendar.getTime();
-        if (userId!= null){
-            Log.d("user Id",userId);
+        if (userId != null) {
+            Log.d("user Id", userId);
             myViewModel.fetchCompletedTasksForWeek(userId);
         }
-        myViewModel.getCompletedTasksForWeek().observe(getViewLifecycleOwner(),count->{
-            if (count!=null){
+        myViewModel.getPending(userId).observe(getViewLifecycleOwner(), count ->
+                pendingCount.setText(count.toString())
+
+        );
+        myViewModel.getComplete(userId).observe(getViewLifecycleOwner(), count -> completeCount.setText(count.toString()));
+
+        myViewModel.getCompletedTasksForWeek().observe(getViewLifecycleOwner(), count -> {
+            if (count != null) {
                 Log.d("Task Count", "Received count: " + count);
-                 updateWeeklyBarChart(count,startOfWeek);
-                Log.d("return Livedata","taskWeekCount"+ count);
+                updateWeeklyBarChart(count, startOfWeek);
+                Log.d("return Livedata", "taskWeekCount" + count);
             }
 
-                });
+        });
 
         getTaskCount(userId);
         return view;
@@ -159,20 +160,20 @@ public class Person_fragment extends Fragment  {
 
         YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.setEnabled(false);
-        DefaultValueFormatter defaultValueFormatter= new DefaultValueFormatter(0);
-       barData.setValueFormatter(defaultValueFormatter);
-       barDataSet.setValueTextSize(12f);
+        DefaultValueFormatter defaultValueFormatter = new DefaultValueFormatter(0);
+        barData.setValueFormatter(defaultValueFormatter);
+        barDataSet.setValueTextSize(12f);
         barData.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
                 if (value == 0) {
                     return "";  // Return an empty string for bars with no data
                 } else {
-                    return String.valueOf((int)value); // Format other values as integers
+                    return String.valueOf((int) value); // Format other values as integers
                 }
             }
         });
-        XAxis xAxis =barChart.getXAxis();
+        XAxis xAxis = barChart.getXAxis();
         xAxis.setGranularityEnabled(false);
         barChart.getDescription().setEnabled(false);
         barChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -198,61 +199,6 @@ public class Person_fragment extends Fragment  {
         }
 
         return weekDays;
-    }
-
-
-    private void createDummyBarChart() {
-        // Create dummy data for the bar chart
-        List<BarEntry> entries = new ArrayList<>();
-
-        // Add dummy data: BarEntry(index, value)
-        entries.add(new BarEntry(0, 5f));  // Monday
-        entries.add(new BarEntry(1, 10f)); // Tuesday
-        entries.add(new BarEntry(2, 7f));  // Wednesday
-        entries.add(new BarEntry(3, 3f));  // Thursday
-        entries.add(new BarEntry(4, 12f)); // Friday
-        entries.add(new BarEntry(5, 9f));  // Saturday
-        entries.add(new BarEntry(6, 6f));  // Sunday
-
-        // Create a dataset and assign it to the chart
-        BarDataSet barDataSet = new BarDataSet(entries, "Completed Tasks");
-        barDataSet.setColor(Color.GREEN); // Set color for bars
-
-        // Create BarData object
-        BarData barData = new BarData(barDataSet);
-
-        // Set the data to the chart
-        barChart.setData(barData);
-
-        // Set chart appearance
-        barChart.setFitBars(true); // Ensure bars fit the screen
-        barChart.invalidate(); // Refresh the chart
-
-        barChart.getXAxis().setDrawGridLines(false);   // Disable grid lines on X-axis
-        barChart.getAxisLeft().setDrawGridLines(false); // Disable grid lines on Y-axis
-        barChart.getAxisRight().setDrawGridLines(false); // Disable grid lines on right Y-axis (optional)
-
-        barChart.getXAxis().setDrawAxisLine(false);   // Remove the X-axis line
-        barChart.getAxisLeft().setDrawAxisLine(false); // Remove the left Y-axis line
-        barChart.getAxisRight().setDrawAxisLine(false); // Remove the ri
-
-        barChart.setDoubleTapToZoomEnabled(false);
-        barChart.setPinchZoom(false);
-
-        // Set x-axis labels (days of the week)
-        List<String> labels = new ArrayList<>();
-        labels.add("Mon");
-        labels.add("Tue");
-        labels.add("Wed");
-        labels.add("Thu");
-        labels.add("Fri");
-        labels.add("Sat");
-        labels.add("Sun");
-
-        barChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-
-        // Log to confirm chart has been updated
-        Log.d("BarChart", "Dummy chart updated!");
     }
 
 

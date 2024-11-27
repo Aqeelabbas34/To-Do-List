@@ -95,8 +95,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             if (R.id.logOutID==item.getItemId()){
                 showAlertDialog();
             }
+            
             return false;
         });
+
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {

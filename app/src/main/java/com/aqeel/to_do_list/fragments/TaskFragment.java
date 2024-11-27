@@ -179,6 +179,8 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
 
     }
 
+
+
     @Override
     public void onPause() {
         Log.e("Activity","Paused");

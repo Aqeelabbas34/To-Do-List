@@ -55,7 +55,12 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
       holder.taskChecked.setOnCheckedChangeListener(null);
 
       holder.timeStampTV.setText(formatTimestamp(currentTask.getTimeStamp()));
-        holder.taskChecked.setChecked(currentTask.getStatus().equals("complete"));
+        boolean isTaskCompleted = currentTask.getStatus().equals("complete");
+        holder.taskChecked.setChecked(isTaskCompleted);
+
+        // Disable checkbox if task is completed
+        // Enable checkbox for incomplete tasks
+        holder.taskChecked.setEnabled(!isTaskCompleted); // Disable checkbox for completed tasks
       holder.taskChecked.setOnCheckedChangeListener((compoundButton, isChecked) -> {
 
           if (itemClickedListener != null){
