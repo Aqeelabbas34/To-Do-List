@@ -44,7 +44,6 @@ public class Person_fragment extends Fragment {
     TextView pendingCount, completeCount, userName;
     SharedPref sharedPref;
     FirebaseFirestore db;
-
     MyViewModel myViewModel;
     BarChart barChart;
 
@@ -62,6 +61,10 @@ public class Person_fragment extends Fragment {
         sharedPref = new SharedPref(requireActivity());
         db = FirebaseFirestore.getInstance();
         ModelUser user = sharedPref.getData();
+         String mail= user.getEmail();
+         if (mail!=null){
+             userName.setText(mail);
+         }
         String userId = user.getEmail();
 //        createDummyBarChart();
         Calendar calendar = Calendar.getInstance();

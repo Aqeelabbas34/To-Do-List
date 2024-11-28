@@ -69,11 +69,11 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         AdapterTask adapterTask= new AdapterTask(requireActivity(),taskList,this);
         binding.taskRecyclerView.setAdapter(adapterTask);
         myViewModel.fetchUserTask("All",userId);
-        myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
+      /*  myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
             if (isAdded()){
                 Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show();
             Log.e("Message","Toast");}
-        });
+        });*/
         myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
             if (isAdded() ){
                 adapterTask.updateList(task);
@@ -107,7 +107,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
 
 
 
-        binding.templateIcon.setOnClickListener(view2 -> Toast.makeText(requireActivity(), "Template button clicked", Toast.LENGTH_SHORT).show());
+      
         return view;
 
     }
@@ -138,7 +138,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
     private void showSearchBar() {
         binding.textTaskId.setVisibility(View.GONE);
         binding.searchIcon.setVisibility(View.GONE);
-        binding.templateIcon.setVisibility(View.GONE);
+
 
         binding.searchView.setVisibility(View.VISIBLE);
         binding.cancelIcon.setVisibility(View.VISIBLE);
@@ -150,7 +150,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
     private void hideSearchBar() {
         binding.textTaskId.setVisibility(View.VISIBLE);
         binding.searchIcon.setVisibility(View.VISIBLE);
-        binding.templateIcon.setVisibility(View.VISIBLE);
+
 
         binding.searchView.setVisibility(View.GONE);
         binding.cancelIcon.setVisibility(View.GONE);

@@ -11,6 +11,18 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    <!--    <ImageView
+            android:id="@+id/noTask_img"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:visibility="gone"
+
+            android:padding="15dp"
+            android:paddingEnd="10dp"
+            android:src="@drawable/img"
+            android:layout_centerInParent="true"
+
+            />-->
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar_id"
@@ -52,18 +64,7 @@
 
                         />
 
-                    <ImageView
-                        android:id="@+id/template_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@id/search_icon"
-                        android:padding="15dp"
-                        android:paddingEnd="10dp"
-                        android:src="@drawable/template"
-                        android:visibility="invisible"
-                        android:layout_centerVertical="true"
 
-                        />
                    <LinearLayout
                        android:id="@+id/search_layout"
                        android:layout_width="wrap_content"
