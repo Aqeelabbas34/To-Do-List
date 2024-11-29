@@ -15,6 +15,9 @@ import com.aqeel.to_do_list.singelton.UserSession;
 import com.aqeel.to_do_list.databinding.ActivitySignUpBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SignUp extends AppCompatActivity {
     FirebaseFirestore db;
     ActivitySignUpBinding binding;
@@ -34,7 +37,14 @@ public class SignUp extends AppCompatActivity {
             Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
         });
 
+       myViewModel.getSuccess().observe(this,success->
+       {
+           if (success) {
+               startActivity(new Intent(SignUp.this,MainActivity.class));
+               finish();
 
+           }
+       });
        binding.btnSignUP.setOnClickListener(view -> {
            String name=binding.nameET.getText().toString();
            String mail=binding.EmailET.getText().toString();
@@ -45,18 +55,18 @@ public class SignUp extends AppCompatActivity {
                binding.EmailET.setError("enter email");
            } else if (password.isEmpty()) {
                binding.paswordET.setError("enter password");
-           }
+           }else if(!isValidEmail(mail)){
+               binding.EmailET.setError("Invalid Email");
+           } else if (password.length()<6) {
+               Toast.makeText(this, "Password must be 6 digits", Toast.LENGTH_SHORT).show();
 
-
-
-              else {
+           } else {
                ModelUser modelUser = new ModelUser(name, mail, password);
                       myViewModel.signUpHandler(mail,modelUser);
-                      sharedPref.saveData(modelUser);
-               sharedPref.setLoggedIn(true);
-               startActivity(new Intent(SignUp.this,MainActivity.class));
-               finish();
-
+                      sharedPref.setLoggedIn(true);
+                      if (Boolean.TRUE.equals(myViewModel.getSuccess().getValue())){
+                          sharedPref.saveData(modelUser);
+                      }
            }
            });
        binding.btnLogin.setOnClickListener(view -> {
@@ -64,5 +74,13 @@ public class SignUp extends AppCompatActivity {
            finish();
        });
 
+    }
+    private boolean isValidEmail(String email) {
+        // Regular expression for basic email validation
+        String emailPattern = "^[a-z0-9._-]+@[a-z0-9.-]+\\.[a-z]{2,}$";
+
+        Pattern pattern = Pattern.compile(emailPattern);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

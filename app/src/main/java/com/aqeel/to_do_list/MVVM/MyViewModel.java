@@ -15,6 +15,7 @@ public class MyViewModel extends ViewModel {
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
     private MutableLiveData<List<ModelTask>> _taskLiveData = new MutableLiveData<>();
     private MutableLiveData<HashMap<String, Integer>> _taskForWeek = new MutableLiveData<>();
+    private final Repository repository;
 
     public LiveData<Integer> getPending(String ID){
         return repository.getPendingCount(ID);
@@ -36,13 +37,10 @@ public class MyViewModel extends ViewModel {
         return _taskLiveData;
     }
 
-    private final Repository repository;
+
 
     public MyViewModel() {
         this.repository = new Repository();
-
-//        completedTasksForWeek=_taskForWeek;
-
     }
 
     public void deleteTask(ModelTask modelTask) {
@@ -66,49 +64,15 @@ public class MyViewModel extends ViewModel {
     }
 
     public void fetchUserTask(String category, String ID) {
-        _taskLiveData = repository.fetchTask(category, ID, new Repository.Callback() {
-            @Override
-            public void onSuccess(String message) {
-                _message.postValue(message);
-                success.postValue(true);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                _message.postValue(error);
-                success.postValue(false);
-            }
-        });
+        _taskLiveData = repository.fetchTask(category, ID);
     }
 
     public void fetchTaskOnDate(String date, String ID) {
-        _taskLiveData = repository.fetchTaskOnDate(date, ID, new Repository.Callback() {
-            @Override
-            public void onSuccess(String message) {
-                _message.postValue(message);
-                success.postValue(true);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                _message.postValue(error);
-                success.postValue(false);
-            }
-        });
+        _taskLiveData = repository.fetchTaskOnDate(date, ID);
     }
 
     public void fetchCompletedTask(String ID) {
-        _taskLiveData = repository.fetchCompletedTask(ID, new Repository.Callback() {
-            @Override
-            public void onSuccess(String message) {
-                _message.postValue(message);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                _message.postValue(error);
-            }
-        });
+        _taskLiveData = repository.fetchCompletedTask(ID);
 
     }
 
@@ -126,8 +90,8 @@ public class MyViewModel extends ViewModel {
     }
 
 
-    public void signUpHandler(String email, ModelUser modelUser) {
-        repository.signUpHandler(email, modelUser, new Repository.Callback() {
+    public void signUpHandler(String email,ModelUser modelUser) {
+        repository.signUpHandler(email,modelUser, new Repository.Callback() {
             @Override
             public void onSuccess(String message) {
                 _message.postValue(message);

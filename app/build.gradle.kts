@@ -42,6 +42,8 @@ android {
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+
+    
     implementation (libs.mpandroidchart)
 
     implementation (libs.recyclerview)
@@ -51,6 +53,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

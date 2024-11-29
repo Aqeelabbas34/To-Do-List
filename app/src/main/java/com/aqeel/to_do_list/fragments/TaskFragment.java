@@ -69,11 +69,11 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         AdapterTask adapterTask= new AdapterTask(requireActivity(),taskList,this);
         binding.taskRecyclerView.setAdapter(adapterTask);
         myViewModel.fetchUserTask("All",userId);
-      /*  myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
+        myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
             if (isAdded()){
                 Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show();
             Log.e("Message","Toast");}
-        });*/
+        });
         myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
             if (isAdded() ){
                 adapterTask.updateList(task);
@@ -107,7 +107,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
 
 
 
-      
+
         return view;
 
     }

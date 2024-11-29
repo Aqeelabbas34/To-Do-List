@@ -43,6 +43,7 @@
             app:fabCradleMargin="10dp"
             app:fabCradleRoundedCornerRadius="50dp"
             app:fabCradleVerticalOffset="5dp"
+            app:elevation="0dp"
 
             >
 
@@ -53,6 +54,7 @@
                 android:background="@android:color/transparent"
                 app:itemActiveIndicatorStyle="@null"
                 app:labelVisibilityMode="labeled"
+                app:elevation="0dp"
 
                 app:menu="@menu/bottom_menue" />
 

@@ -55,7 +55,7 @@ public class Calender_fragment extends Fragment implements AdapterTask.OnItemCli
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int date) {
             String selectedDate = year +"-"+(month+1)+"-"+ date;
-                Toast.makeText(requireActivity(),selectedDate,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(requireActivity(),selectedDate,Toast.LENGTH_SHORT).show();
                 ModelUser user = sharedPref.getData();
                 String userId= user.getEmail();
                 myViewModel.fetchTaskOnDate(selectedDate,userId);
