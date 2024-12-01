@@ -45,6 +45,10 @@ public void setPending(int count ){
         editor.putBoolean("Login_Status",status);
         editor.apply();
     }
+    public void clearData(){
+        editor.clear();
+        editor.apply();
+    }
     public boolean isLoggedIn(){
         return sharedPreferences.getBoolean("Login_Status",false);
     }

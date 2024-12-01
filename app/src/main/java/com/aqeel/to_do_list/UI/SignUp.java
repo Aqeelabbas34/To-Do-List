@@ -2,6 +2,7 @@ package com.aqeel.to_do_list.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -11,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
 import com.aqeel.to_do_list.MVVM.MyViewModel;
-import com.aqeel.to_do_list.singelton.UserSession;
+
 import com.aqeel.to_do_list.databinding.ActivitySignUpBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -40,15 +41,19 @@ public class SignUp extends AppCompatActivity {
        myViewModel.getSuccess().observe(this,success->
        {
            if (success) {
+               showLoading(false);
                startActivity(new Intent(SignUp.this,MainActivity.class));
                finish();
 
+           }else {
+               showLoading(false);
            }
        });
        binding.btnSignUP.setOnClickListener(view -> {
            String name=binding.nameET.getText().toString();
            String mail=binding.EmailET.getText().toString();
            String password=binding.paswordET.getText().toString();
+
            if(name.isEmpty()){
                binding.nameET.setError("enter name");
            } else if (mail.isEmpty()) {
@@ -61,11 +66,13 @@ public class SignUp extends AppCompatActivity {
                Toast.makeText(this, "Password must be 6 digits", Toast.LENGTH_SHORT).show();
 
            } else {
+               showLoading(true);
                ModelUser modelUser = new ModelUser(name, mail, password);
                       myViewModel.signUpHandler(mail,modelUser);
-                      sharedPref.setLoggedIn(true);
+                      sharedPref.saveData(modelUser);
                       if (Boolean.TRUE.equals(myViewModel.getSuccess().getValue())){
-                          sharedPref.saveData(modelUser);
+                          sharedPref.setLoggedIn(true);
+
                       }
            }
            });
@@ -82,5 +89,12 @@ public class SignUp extends AppCompatActivity {
         Pattern pattern = Pattern.compile(emailPattern);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+    private void showLoading(boolean isLoading) {
+        if (isLoading) {
+            binding.circularProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            binding.circularProgressBar.setVisibility(View.GONE);
+        }
     }
 }

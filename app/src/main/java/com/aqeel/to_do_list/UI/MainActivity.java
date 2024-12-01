@@ -35,7 +35,7 @@ import com.aqeel.to_do_list.DataClasses.ModelUser;
 import com.aqeel.to_do_list.fragments.Person_fragment;
 import com.aqeel.to_do_list.R;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
-import com.aqeel.to_do_list.singelton.TaskCounter;
+
 import com.aqeel.to_do_list.fragments.TaskFragment;
 import com.aqeel.to_do_list.databinding.ActivityMainBinding;
 import com.aqeel.to_do_list.databinding.CustomDialogeBinding;
@@ -141,8 +141,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
                 String status= "pending";
-
-                TaskCounter.getInstance().addTaskToPending();
                 if (selectedDueDate == null || selectedDueDate.isEmpty()) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.add(Calendar.DAY_OF_YEAR, 1);  // Set due date to tomorrow
@@ -229,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public void logout() {
         SharedPref sharedPref = new SharedPref(this);
         sharedPref.setLoggedIn(false);
+        sharedPref.clearData();
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

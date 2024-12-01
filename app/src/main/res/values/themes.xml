@@ -12,4 +12,11 @@
 
 
     <style name="Theme.ToDoList" parent="Base.Theme.ToDoList" />
+    <style name="LightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/skyBlue</item> <!-- Primary color -->
+        <item name="colorPrimaryDark">@color/grey</item> <!-- Darker primary color -->
+        <item name="colorAccent">@color/boneWhite</item> <!-- Accent color -->
+        <item name="android:textColorPrimary">@color/black</item> <!-- Text color -->
+        <item name="android:background">@color/eggShell</item> <!-- Background color -->
+    </style>
 </resources>

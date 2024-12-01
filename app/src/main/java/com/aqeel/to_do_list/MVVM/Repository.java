@@ -218,7 +218,11 @@ public class Repository {
         HashMap<String, Integer> taskCounts = new HashMap<>();
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Start from Monday
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            calendar.add(Calendar.DATE, -6); // Move back 6 days to the previous Monday
+        } else {
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Otherwise, set to the current week's Monday
+        }
         Date startOfWeek = calendar.getTime();
         calendar.add(Calendar.DATE, 6); // Get the end of the week (Sunday)
         Date endOfWeek = calendar.getTime();

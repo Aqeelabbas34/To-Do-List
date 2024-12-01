@@ -1,24 +1,30 @@
 package com.aqeel.to_do_list.fragments;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aqeel.to_do_list.DataClasses.AdapterTask;
 import com.aqeel.to_do_list.DataClasses.ModelTask;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
 import com.aqeel.to_do_list.MVVM.MyViewModel;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
+import com.aqeel.to_do_list.R;
 import com.aqeel.to_do_list.UI.taskDetails;
 import com.aqeel.to_do_list.databinding.FragmentTaskBinding;
 
@@ -43,7 +49,14 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment for creating UI
         binding = FragmentTaskBinding.inflate(inflater, container, false);
-        View view = binding.getRoot();
+
+
+        return binding.getRoot();
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         sharedPref = new SharedPref(requireContext());
         ModelUser user = sharedPref.getData();
         taskList = new ArrayList<>();
@@ -72,7 +85,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
             if (isAdded()){
                 Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show();
-            Log.e("Message","Toast");}
+                Log.e("Message","Toast");}
         });
         myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
             if (isAdded() ){
@@ -81,38 +94,67 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         });
 
         binding.allTV.setOnClickListener(view1 ->
-            myViewModel.fetchUserTask("All",userId)
+                myViewModel.fetchUserTask("All",userId)
 
 
         );
         binding.personalTV.setOnClickListener(view1 ->
 
-            myViewModel.fetchUserTask("personal",userId)
+                myViewModel.fetchUserTask("personal",userId)
 
         );
         binding.workTV.setOnClickListener(view1 ->
-            myViewModel.fetchUserTask("Work",userId)
+                myViewModel.fetchUserTask("Work",userId)
 
         );
         binding.wishListTV.setOnClickListener(view1 ->
 
-            myViewModel.fetchUserTask("Wishlist",userId)
+                myViewModel.fetchUserTask("Wishlist",userId)
 
         );
         binding.birthdayTV.setOnClickListener(view1 ->
 
-            myViewModel.fetchUserTask("Birthday",userId)
+                myViewModel.fetchUserTask("Birthday",userId)
 
         );
 
+      /*  ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
 
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
+            }
 
-        return view;
+            @Override
+            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                View itemView = viewHolder.itemView;
+                RelativeLayout deleteLayout=itemView.findViewById(R.id.deleteLayout);
+                RelativeLayout checkLayout=itemView.findViewById(R.id.checkLayout);
+                RelativeLayout forground =itemView.findViewById(R.id.foreGround);
+                if (dX>0)
+                {
+                   checkLayout.setVisibility(View.VISIBLE);
+                   forground.setVisibility(View.VISIBLE);
+                } else if (dX<0) {
+                    deleteLayout.setVisibility(View.VISIBLE);
+                    forground.setVisibility(View.VISIBLE);
+                }
+                else {
+                    deleteLayout.setVisibility(View.GONE);
+                    forground.setVisibility(View.VISIBLE);
+                    checkLayout.setVisibility(View.GONE);
+                }
+                forground.setTranslationX(dX);
+            }
+        });
+       itemTouchHelper.attachToRecyclerView(binding.taskRecyclerView);*/
 
     }
-
-
 
     private void filterTask(String query){
         List<ModelTask> filteredList= new ArrayList<>();

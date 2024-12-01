@@ -2,6 +2,8 @@ package com.aqeel.to_do_list.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -11,19 +13,15 @@ import androidx.lifecycle.ViewModelProvider;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
 import com.aqeel.to_do_list.DataClasses.SharedPref;
 import com.aqeel.to_do_list.MVVM.MyViewModel;
-import com.aqeel.to_do_list.singelton.UserSession;
 import com.aqeel.to_do_list.databinding.ActivityLoginBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
     FirebaseFirestore db;
     ActivityLoginBinding binding;
     SharedPref sharedPref;
     MyViewModel myViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +39,11 @@ public class LoginActivity extends AppCompatActivity {
         myViewModel.getSuccess().observe(this,success->{
             if (success!= null && success){
                 startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                showLoading(false);
                 sharedPref.setLoggedIn(true);
-                finish();
+
+            }else {
+                showLoading(false);
             }
         });
         binding.btnLogin.setOnClickListener(view -> {
@@ -50,8 +51,10 @@ public class LoginActivity extends AppCompatActivity {
             String mail= binding.EmailET.getText().toString();
             String pass=binding.paswordET.getText().toString();
             ModelUser user = new ModelUser("",mail,pass);
+
             sharedPref.saveData(user);
             if(!mail.isEmpty() && !pass.isEmpty()){
+                showLoading(true);
                     myViewModel.login(mail,pass);
 
             } else if (mail.isEmpty()) {
@@ -67,38 +70,12 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
-   /* private void loginHandler(String enteredEmail,String enteredPassword){
-        db.collection("User")
-                .whereEqualTo("email",enteredEmail)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        QuerySnapshot querySnapshot= task.getResult();
-                        if (!querySnapshot.isEmpty()){
-                            for(QueryDocumentSnapshot document : querySnapshot){
-                                ModelUser modelUser=document.toObject(ModelUser.class);
-                                if (modelUser.getPassword().equals(enteredPassword)){
-                                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                                    sharedPref.setLoggedIn(true);
-                                    Intent intent= new Intent(LoginActivity.this, MainActivity.class);
-//                                    intent.putExtra("userID",enteredEmail);
-                                    UserSession.getInstance().setUserID(enteredEmail);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else {
-                                    Toast.makeText(LoginActivity.this,"Incorrect Password",Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                        else {
-                            Toast.makeText(LoginActivity.this,"No user found",Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    else {
-                        Toast.makeText(LoginActivity.this,"Error while fetching data" + Objects.requireNonNull(task.getException()).getMessage(),Toast.LENGTH_SHORT).show();
-                    }
 
-                });
-    }*/
+    private void showLoading(boolean isLoading) {
+        if (isLoading) {
+            binding.circularProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            binding.circularProgressBar.setVisibility(View.GONE);
+        }
+    }
 }
