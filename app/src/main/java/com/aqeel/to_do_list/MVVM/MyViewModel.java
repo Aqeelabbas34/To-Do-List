@@ -1,5 +1,7 @@
 package com.aqeel.to_do_list.MVVM;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -14,6 +16,7 @@ public class MyViewModel extends ViewModel {
     private final MutableLiveData<String> _message = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
     private MutableLiveData<List<ModelTask>> _taskLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ModelTask>> _DateTaskLiveData = new MutableLiveData<>();
     private MutableLiveData<HashMap<String, Integer>> _taskForWeek = new MutableLiveData<>();
     private final Repository repository;
 
@@ -32,9 +35,21 @@ public class MyViewModel extends ViewModel {
         _taskForWeek = repository.getCompletedTaskCountForWeek(userID);
 
     }
+    public void fetchUserTask(String category, String ID) {
+        _taskLiveData = repository.fetchTask(category, ID);
+    }
+
+   /* public void fetchTaskOnDate(String date, String ID) {
+        _DateTaskLiveData = repository.fetchTaskOnDate(date, ID);
+        Log.d("fetch task calender","View Model called repo function  "+date+ID);
+    }*/
 
     public LiveData<List<ModelTask>> getTaskLiveData() {
         return _taskLiveData;
+    }
+    public LiveData<List<ModelTask>> getOnDateTaskLiveData(String date, String ID) {
+        Log.d("fetch task calender","View Model called repo function  "+date+ID);
+        return repository.fetchTaskOnDate(date,ID);
     }
 
 
@@ -63,13 +78,7 @@ public class MyViewModel extends ViewModel {
         });
     }
 
-    public void fetchUserTask(String category, String ID) {
-        _taskLiveData = repository.fetchTask(category, ID);
-    }
 
-    public void fetchTaskOnDate(String date, String ID) {
-        _taskLiveData = repository.fetchTaskOnDate(date, ID);
-    }
 
     public void fetchCompletedTask(String ID) {
         _taskLiveData = repository.fetchCompletedTask(ID);

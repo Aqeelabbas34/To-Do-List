@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".UI.taskDetails">
 
     <RelativeLayout
@@ -21,7 +22,8 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbarID"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

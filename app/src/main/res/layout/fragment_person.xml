@@ -32,7 +32,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
                         android:text="@string/mineHeader"
-                        android:textColor="@color/black"
+                        android:textColor="@color/grey"
                         android:textSize="28sp"
                         android:textStyle="bold"
 

@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +28,11 @@ import com.aqeel.to_do_list.UI.taskDetails;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
 public class Calender_fragment extends Fragment implements AdapterTask.OnItemClickedListener {
@@ -41,34 +46,52 @@ public class Calender_fragment extends Fragment implements AdapterTask.OnItemCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+       View view= inflater.inflate(R.layout.fragment_calender, container, false);
         // Inflate the layout for this fragment
-        View view =inflater.inflate(R.layout.fragment_calender, container, false);
         recyclerView = view.findViewById(R.id.task_recyclerView);
         calendar= view.findViewById(R.id.calender_id);
         db= FirebaseFirestore.getInstance();
         myViewModel= new ViewModelProvider(requireActivity()).get(MyViewModel.class);
         sharedPref = new SharedPref(requireContext());
+        ModelUser user = sharedPref.getData();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapterTask=new AdapterTask(getContext(),taskList,this);
         recyclerView.setAdapter(adapterTask);
-        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int date) {
-            String selectedDate = year +"-"+(month+1)+"-"+ date;
+        String userId= user.getEmail();
+        Calendar calendar1 = Calendar.getInstance();
+        // Define the desired date format
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+       String dateToday= dateFormat.format(calendar1.getTime());
+       /* myViewModel.fetchTaskOnDate(userId,dateToday);*/
+
+
+        calendar.setOnDateChangeListener((calendarView, year, month, date) -> {
+            String selectedDate = year + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", date);
+
+            Log.d("Date", "Date in fragment :" +selectedDate);
 //                Toast.makeText(requireActivity(),selectedDate,Toast.LENGTH_SHORT).show();
-                ModelUser user = sharedPref.getData();
-                String userId= user.getEmail();
-                myViewModel.fetchTaskOnDate(selectedDate,userId);
-                myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
-                    if (isAdded()){
-                        adapterTask.updateList(task );
-                    }
-                });
 
 
-            }
+            Log.d("user ID calender frag","User Id called VM function from fragment:"+ userId);
+            myViewModel.getOnDateTaskLiveData(selectedDate,userId).observe(getViewLifecycleOwner(),task->{
+
+                if (isAdded()&& task!=null){
+                    Log.d("Task List", "task received in observer:"+task);
+                    adapterTask.updateList(task);
+
+                } });
+
+
+
+
         });
-        return  view;
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
     }
 
     @Override

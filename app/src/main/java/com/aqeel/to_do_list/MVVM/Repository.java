@@ -2,18 +2,16 @@ package com.aqeel.to_do_list.MVVM;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.aqeel.to_do_list.DataClasses.ModelTask;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,6 +27,7 @@ public class Repository {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     MutableLiveData<List<ModelTask>> taskLiveData = new MutableLiveData<>();
+    MutableLiveData<List<ModelTask>> dateTaskLiveData = new MutableLiveData<>();
 
     public void signUpHandler(String mail, ModelUser modelUser, Callback callback) {
         db.collection("User")
@@ -126,7 +125,7 @@ public class Repository {
 //                callback.onFailure("No task found");
             }
             taskLiveData.postValue(taskList);
-
+            Log.d("repo","triggered"+taskList);
         });
         return taskLiveData;
     }
@@ -154,35 +153,34 @@ public class Repository {
                     callback.onFailure("Failed to add task");
                 });
     }
-    public MutableLiveData<List<ModelTask>> fetchTaskOnDate (String date, String ID){
+    public MutableLiveData<List<ModelTask>> fetchTaskOnDate(String date, String userId) {
         List<ModelTask> taskList = new ArrayList<>();
-       db.collection("Task")
-                .whereEqualTo("userID",ID)
-                .whereEqualTo("dueDate",date)
-                .whereEqualTo("status","pending")
-                .addSnapshotListener((querySnapshot, error) -> {
-            if (error != null) {
-//                callback.onFailure(" error");
-                return;
-            }
-            taskList.clear();
-            if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
-                    String taskID = documentSnapshot.getId();
-                    ModelTask userTask = documentSnapshot.toObject(ModelTask.class);
-                    userTask.setTaskID(taskID);
+        db.collection("Task")
+                .whereEqualTo("userID", userId)
+                .whereEqualTo("dueDate", date)
+                .whereEqualTo("status", "pending")
+                .get(Source.SERVER) // Changed from addSnapshotListener to get to get a one-time fetch
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        taskList.clear();
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
+                                ModelTask modelTask = documentSnapshot.toObject(ModelTask.class);
+                                taskList.add(modelTask);
+                                Log.d("Task From Firebase","Task received from firebase:" +modelTask);
+                            }
 
-                    taskList.add(userTask);
-
-                }
-            }/*else {
-                callback.onFailure("No task found");
-            }*/
-            taskLiveData.postValue(taskList);
-
-        });
-        return taskLiveData;
+                        }
+                        dateTaskLiveData.setValue(taskList);
+                      // Update LiveData
+                    } else {
+                        Log.d("Repo", "Error getting tasks: " + task.getException().getMessage());
+                    }
+                });
+        return dateTaskLiveData;
     }
+
     public MutableLiveData<List<ModelTask>> fetchCompletedTask ( String ID){
         List<ModelTask> taskList = new ArrayList<>();
         db.collection("Task")
@@ -398,5 +396,6 @@ public class Repository {
 
         void onFailure(String error);
     }
+
 }
 
