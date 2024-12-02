@@ -81,7 +81,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         binding.taskRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         AdapterTask adapterTask= new AdapterTask(requireActivity(),taskList,this);
         binding.taskRecyclerView.setAdapter(adapterTask);
-        myViewModel.fetchUserTask("All",userId);
+        myViewModel.fetchUserTask("All",userId,"");
         myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
             if (isAdded()){
                 Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show();
@@ -94,27 +94,27 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         });
 
         binding.allTV.setOnClickListener(view1 ->
-                myViewModel.fetchUserTask("All",userId)
+                myViewModel.fetchUserTask("All",userId,"")
 
 
         );
         binding.personalTV.setOnClickListener(view1 ->
 
-                myViewModel.fetchUserTask("personal",userId)
+                myViewModel.fetchUserTask("personal",userId,"")
 
         );
         binding.workTV.setOnClickListener(view1 ->
-                myViewModel.fetchUserTask("Work",userId)
+                myViewModel.fetchUserTask("Work",userId,"")
 
         );
         binding.wishListTV.setOnClickListener(view1 ->
 
-                myViewModel.fetchUserTask("Wishlist",userId)
+                myViewModel.fetchUserTask("Wishlist",userId,"")
 
         );
         binding.birthdayTV.setOnClickListener(view1 ->
 
-                myViewModel.fetchUserTask("Birthday",userId)
+                myViewModel.fetchUserTask("Birthday",userId,"")
 
         );
 

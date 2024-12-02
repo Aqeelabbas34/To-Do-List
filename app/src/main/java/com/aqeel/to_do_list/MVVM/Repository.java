@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +93,7 @@ public class Repository {
 
     }
 
-    public MutableLiveData<List<ModelTask>> fetchTask(String category, String ID){
+    public MutableLiveData<List<ModelTask>> fetchTask(String category, String ID,String date){
         List<ModelTask> taskList = new ArrayList<>();
         Query taskQuery= db.collection("Task")
                 .whereEqualTo("userID",ID)
@@ -100,6 +101,7 @@ public class Repository {
                 .orderBy("timeStamp", Query.Direction.DESCENDING);
         if(!category.equals("All")){
             taskQuery=taskQuery.whereEqualTo("category",category);
+
         }
         taskQuery .addSnapshotListener((querySnapshot, error) -> {
             if (error != null) {
@@ -153,32 +155,38 @@ public class Repository {
                     callback.onFailure("Failed to add task");
                 });
     }
-    public MutableLiveData<List<ModelTask>> fetchTaskOnDate(String date, String userId) {
+    public MutableLiveData<List<ModelTask>> fetchTaskOnDate (String date, String ID, Callback callback){
         List<ModelTask> taskList = new ArrayList<>();
-        db.collection("Task")
-                .whereEqualTo("userID", userId)
-                .whereEqualTo("dueDate", date)
-                .whereEqualTo("status", "pending")
-                .get(Source.SERVER) // Changed from addSnapshotListener to get to get a one-time fetch
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        taskList.clear();
-                        QuerySnapshot querySnapshot = task.getResult();
-                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
-                            for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
-                                ModelTask modelTask = documentSnapshot.toObject(ModelTask.class);
-                                taskList.add(modelTask);
-                                Log.d("Task From Firebase","Task received from firebase:" +modelTask);
-                            }
-
-                        }
-                        dateTaskLiveData.setValue(taskList);
-                      // Update LiveData
-                    } else {
-                        Log.d("Repo", "Error getting tasks: " + task.getException().getMessage());
+        Log.d("Repo","Function triggered");
+       db.collection("Task")
+                .whereEqualTo("userID",ID)
+                .whereEqualTo("dueDate",date)
+                .whereEqualTo("status","pending")
+                .addSnapshotListener((querySnapshot, error) -> {
+                    if (error != null) {
+                        callback.onFailure("snapshot error");
+                        Log.d("Query","Error");
+                        return;
                     }
+                    taskList.clear();
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                        Log.d("Query","Query Successful");
+                        for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
+                            String taskID = documentSnapshot.getId();
+                            ModelTask userTask = documentSnapshot.toObject(ModelTask.class);
+                            userTask.setTaskID(taskID);
+
+                            taskList.add(userTask);
+                            Log.d("Firestore","Task recieved from firebase");
+                        }
+                    } else {
+                        callback.onFailure("No task found");
+                    }
+                    dateTaskLiveData.postValue(taskList);
+
                 });
-        return dateTaskLiveData;
+       return dateTaskLiveData;
+
     }
 
     public MutableLiveData<List<ModelTask>> fetchCompletedTask ( String ID){

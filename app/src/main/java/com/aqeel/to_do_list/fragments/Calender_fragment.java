@@ -62,26 +62,26 @@ public class Calender_fragment extends Fragment implements AdapterTask.OnItemCli
         // Define the desired date format
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
        String dateToday= dateFormat.format(calendar1.getTime());
-       /* myViewModel.fetchTaskOnDate(userId,dateToday);*/
+        myViewModel.fetchTaskOnDate(userId,dateToday);
+        myViewModel.getOnDateTaskLiveData().observe(getViewLifecycleOwner(),task->{
+            ModelTask modelTask= new ModelTask();
+            if (isAdded()&& task!=null){
+                Log.d("Task List", "task received in observer:"+task+modelTask.getTaskName());
+                adapterTask.updateList(task);
 
+            } });
 
         calendar.setOnDateChangeListener((calendarView, year, month, date) -> {
             String selectedDate = year + "-" + String.format("%02d", (month + 1)) + "-" + String.format("%02d", date);
 
-            Log.d("Date", "Date in fragment :" +selectedDate);
+            Log.d("Date", "Date selected :" +selectedDate);
 //                Toast.makeText(requireActivity(),selectedDate,Toast.LENGTH_SHORT).show();
 
 
             Log.d("user ID calender frag","User Id called VM function from fragment:"+ userId);
-            myViewModel.getOnDateTaskLiveData(selectedDate,userId).observe(getViewLifecycleOwner(),task->{
-
-                if (isAdded()&& task!=null){
-                    Log.d("Task List", "task received in observer:"+task);
-                    adapterTask.updateList(task);
-
-                } });
 
 
+            myViewModel.fetchTaskOnDate(userId,dateToday);
 
 
         });

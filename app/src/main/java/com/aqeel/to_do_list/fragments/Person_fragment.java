@@ -89,7 +89,7 @@ public class Person_fragment extends Fragment {
 
         });
 
-        getTaskCount(userId);
+
         return view;
     }
 
@@ -205,7 +205,7 @@ public class Person_fragment extends Fragment {
     }
 
 
-    private void getTaskCount(String userID) {
+   /* private void getTaskCount(String userID) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
@@ -236,5 +236,5 @@ public class Person_fragment extends Fragment {
                         Log.w("count complete", "Error getting tasks", task.getException());
                     }
                 });
-    }
+    }*/
 }
