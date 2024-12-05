@@ -42,7 +42,7 @@ public class MyViewModel extends ViewModel {
         _taskLiveData = repository.fetchTask(category, ID,date);
     }
 
-    public void fetchTaskOnDate(String date, String ID) {
+   /* public void fetchTaskOnDate(String date, String ID) {
         Log.d("fetch task calender","View Model called repo function  ");
         _taskLiveData = repository.fetchTaskOnDate(date, ID, new Repository.Callback() {
             @Override
@@ -56,7 +56,7 @@ public class MyViewModel extends ViewModel {
             }
         });
 
-    }
+    }*/
 
     public LiveData<List<ModelTask>> getTaskLiveData() {
         Log.d("View Model","Task received in view model");

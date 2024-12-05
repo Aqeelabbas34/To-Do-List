@@ -43,6 +43,7 @@ public class SignUp extends AppCompatActivity {
            if (success) {
                showLoading(false);
                startActivity(new Intent(SignUp.this,MainActivity.class));
+               sharedPref.setLoggedIn(true);
                finish();
 
            }else {
@@ -71,7 +72,7 @@ public class SignUp extends AppCompatActivity {
                       myViewModel.signUpHandler(mail,modelUser);
                       sharedPref.saveData(modelUser);
                       if (Boolean.TRUE.equals(myViewModel.getSuccess().getValue())){
-                          sharedPref.setLoggedIn(true);
+
 
                       }
            }

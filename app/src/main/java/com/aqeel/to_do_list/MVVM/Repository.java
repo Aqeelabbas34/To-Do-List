@@ -155,7 +155,7 @@ public class Repository {
                     callback.onFailure("Failed to add task");
                 });
     }
-    public MutableLiveData<List<ModelTask>> fetchTaskOnDate (String date, String ID, Callback callback){
+    /*public MutableLiveData<List<ModelTask>> fetchTaskOnDate (String date, String ID, Callback callback){
         List<ModelTask> taskList = new ArrayList<>();
         Log.d("Repo","Function triggered");
        db.collection("Task")
@@ -187,7 +187,7 @@ public class Repository {
                 });
        return dateTaskLiveData;
 
-    }
+    }*/
 
     public MutableLiveData<List<ModelTask>> fetchCompletedTask ( String ID){
         List<ModelTask> taskList = new ArrayList<>();

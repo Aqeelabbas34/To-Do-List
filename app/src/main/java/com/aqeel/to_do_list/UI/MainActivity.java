@@ -29,7 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.aqeel.to_do_list.MVVM.MyViewModel;
-import com.aqeel.to_do_list.fragments.Calender_fragment;
+import com.aqeel.to_do_list.fragments.Completed_fragment;
 import com.aqeel.to_do_list.DataClasses.ModelTask;
 import com.aqeel.to_do_list.DataClasses.ModelUser;
 import com.aqeel.to_do_list.fragments.Person_fragment;
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         } else if (R.id.calender_id == item.getItemId()) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new Calender_fragment())
+                    .replace(R.id.content_frame, new Completed_fragment())
                     .commit();
             return true;
         } else if (R.id.profile_id == item.getItemId()) {
