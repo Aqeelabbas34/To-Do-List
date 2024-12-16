@@ -82,11 +82,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
         AdapterTask adapterTask= new AdapterTask(requireActivity(),taskList,this);
         binding.taskRecyclerView.setAdapter(adapterTask);
         myViewModel.fetchUserTask("All",userId,"");
-        myViewModel.getMessage().observe(getViewLifecycleOwner(),message->{
-            if (isAdded()){
-                Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show();
-                Log.e("Message","Toast");}
-        });
+
         myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
             if (isAdded() ){
                 adapterTask.updateList(task);
@@ -118,41 +114,7 @@ public class TaskFragment extends Fragment implements AdapterTask.OnItemClickedL
 
         );
 
-      /*  ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
-            }
-
-            @Override
-            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                View itemView = viewHolder.itemView;
-                RelativeLayout deleteLayout=itemView.findViewById(R.id.deleteLayout);
-                RelativeLayout checkLayout=itemView.findViewById(R.id.checkLayout);
-                RelativeLayout forground =itemView.findViewById(R.id.foreGround);
-                if (dX>0)
-                {
-                   checkLayout.setVisibility(View.VISIBLE);
-                   forground.setVisibility(View.VISIBLE);
-                } else if (dX<0) {
-                    deleteLayout.setVisibility(View.VISIBLE);
-                    forground.setVisibility(View.VISIBLE);
-                }
-                else {
-                    deleteLayout.setVisibility(View.GONE);
-                    forground.setVisibility(View.VISIBLE);
-                    checkLayout.setVisibility(View.GONE);
-                }
-                forground.setTranslationX(dX);
-            }
-        });
-       itemTouchHelper.attachToRecyclerView(binding.taskRecyclerView);*/
+  
 
     }
 

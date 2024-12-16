@@ -60,6 +60,7 @@ public class AdapterTask extends RecyclerView.Adapter<AdapterTask.ItemViewHolder
 
           if (itemClickedListener != null){
           itemClickedListener.onTaskChecked(currentTask,isChecked);
+          modelTaskList.remove(currentTask);
       }
 
       });

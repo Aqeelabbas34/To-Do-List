@@ -28,7 +28,7 @@ public class Repository {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     MutableLiveData<List<ModelTask>> taskLiveData = new MutableLiveData<>();
-    MutableLiveData<List<ModelTask>> dateTaskLiveData = new MutableLiveData<>();
+    MutableLiveData<List<ModelTask>> completedTaskLiveData = new MutableLiveData<>();
 
     public void signUpHandler(String mail, ModelUser modelUser, Callback callback) {
         db.collection("User")
@@ -213,10 +213,10 @@ public class Repository {
                     }/*else {
 //                        callback.onFailure("No task found");
                     }*/
-                    taskLiveData.postValue(taskList);
+                    completedTaskLiveData.postValue(taskList);
 
                 });
-        return taskLiveData;
+        return completedTaskLiveData;
     }
     public MutableLiveData<HashMap<String,Integer>> getCompletedTaskCountForWeek(String ID) {
         MutableLiveData<HashMap<String,Integer>> completedTaskCount = new MutableLiveData<>();

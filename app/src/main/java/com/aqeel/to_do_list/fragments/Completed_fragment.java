@@ -40,8 +40,13 @@ public class Completed_fragment extends Fragment implements AdapterTask.OnItemCl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       View view= inflater.inflate(R.layout.fragment_completed, container, false);
         // Inflate the layout for this fragment
+
+        return inflater.inflate(R.layout.fragment_completed, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.task_recyclerView);
         calendar= view.findViewById(R.id.calender_id);
         db= FirebaseFirestore.getInstance();
@@ -51,22 +56,16 @@ public class Completed_fragment extends Fragment implements AdapterTask.OnItemCl
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapterTask=new AdapterTask(getContext(),taskList,this);
         recyclerView.setAdapter(adapterTask);
-
-        myViewModel.getTaskLiveData().observe(getViewLifecycleOwner(),task->{
+        myViewModel.fetchCompletedTask(user.getEmail());
+        myViewModel.getCompletedTaskLiveData().observe(getViewLifecycleOwner(),task->{
             ModelTask modelTask= new ModelTask();
-            if (isAdded()&& task!=null){
+            if (isAdded()){
                 Log.d("Task List", "task received in observer:"+task+modelTask.getTaskName());
                 adapterTask.updateList(task);
 
             } });
 
-        myViewModel.fetchCompletedTask(user.getEmail());
 
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
     }
 
@@ -86,8 +85,6 @@ public class Completed_fragment extends Fragment implements AdapterTask.OnItemCl
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
+
+
 }

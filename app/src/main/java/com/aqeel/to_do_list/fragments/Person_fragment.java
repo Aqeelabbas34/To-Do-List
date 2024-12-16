@@ -205,36 +205,4 @@ public class Person_fragment extends Fragment {
     }
 
 
-   /* private void getTaskCount(String userID) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-
-        db.collection("Task")
-                .whereEqualTo("userID", userID)
-                .whereEqualTo("status", "pending")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        // Count the number of documents retrieved (tasks)
-                        int pending = task.getResult().size();
-                        pendingCount.setText(String.valueOf(pending));
-                    } else {
-                        Log.w("count pending", "Error getting tasks", task.getException());
-                    }
-                });
-
-
-        db.collection("Task")
-                .whereEqualTo("userID", userID)
-                .whereEqualTo("status", "complete")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        int complete = task.getResult().size();
-                        completeCount.setText(String.valueOf(complete));
-                    } else {
-                        Log.w("count complete", "Error getting tasks", task.getException());
-                    }
-                });
-    }*/
 }

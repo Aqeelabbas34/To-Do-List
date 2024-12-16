@@ -6,10 +6,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     tools:context=".fragments.Completed_fragment">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginBottom="63dp"
     >
     <TextView
@@ -23,18 +27,29 @@
         android:layout_marginTop="15dp"
         android:layout_marginStart="15dp"
         />
-
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/viewLine"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:layout_below="@id/completed_TV_ID"
+        />
    <androidx.recyclerview.widget.RecyclerView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_below="@id/completed_TV_ID"
+       android:layout_below="@id/viewLine"
        android:layout_marginTop="10dp"
        android:visibility="visible"
        android:layout_marginHorizontal="10dp"
        android:id="@+id/task_recyclerView"/>
 </RelativeLayout>
+</ScrollView>
     <View
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/white"
+        android:layout_gravity="bottom"
         android:visibility="invisible"/>
+
 </FrameLayout>

@@ -16,7 +16,7 @@ public class MyViewModel extends ViewModel {
     private final MutableLiveData<String> _message = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
     private MutableLiveData<List<ModelTask>> _taskLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<ModelTask>> _DateTaskLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ModelTask>> _completedTaskLiveData = new MutableLiveData<>();
     private MutableLiveData<HashMap<String, Integer>> _taskForWeek = new MutableLiveData<>();
     private final Repository repository;
     public MyViewModel() {
@@ -38,37 +38,26 @@ public class MyViewModel extends ViewModel {
         _taskForWeek = repository.getCompletedTaskCountForWeek(userID);
 
     }
+
     public void fetchUserTask(String category, String ID,String date) {
         _taskLiveData = repository.fetchTask(category, ID,date);
     }
 
-   /* public void fetchTaskOnDate(String date, String ID) {
-        Log.d("fetch task calender","View Model called repo function  ");
-        _taskLiveData = repository.fetchTaskOnDate(date, ID, new Repository.Callback() {
-            @Override
-            public void onSuccess(String message) {
 
-            }
 
-            @Override
-            public void onFailure(String error) {
-
-            }
-        });
-
-    }*/
 
     public LiveData<List<ModelTask>> getTaskLiveData() {
         Log.d("View Model","Task received in view model");
         return _taskLiveData;
     }
-    public LiveData<List<ModelTask>> getOnDateTaskLiveData() {
-        Log.d("fetch task calender","View Model return live data ");
-        return _DateTaskLiveData;
+    public LiveData<List<ModelTask>> getCompletedTaskLiveData() {
+        Log.d("View Model","Task received in view model");
+        return _completedTaskLiveData;
     }
+    public void fetchCompletedTask(String ID) {
+        _completedTaskLiveData= repository.fetchCompletedTask(ID);
 
-
-
+    }
 
 
     public void deleteTask(ModelTask modelTask) {
@@ -93,10 +82,7 @@ public class MyViewModel extends ViewModel {
 
 
 
-    public void fetchCompletedTask(String ID) {
-        _taskLiveData = repository.fetchCompletedTask(ID);
 
-    }
 
     public void markComplete(ModelTask modelTask) {
         repository.markComplete(modelTask);
