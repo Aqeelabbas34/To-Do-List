@@ -40,6 +40,7 @@ public class SignUp extends AppCompatActivity {
 
        myViewModel.getSuccess().observe(this,success->
        {
+           //observe message 
            if (success) {
                showLoading(false);
                startActivity(new Intent(SignUp.this,MainActivity.class));
